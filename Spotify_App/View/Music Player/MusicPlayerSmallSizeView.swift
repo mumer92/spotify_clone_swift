@@ -14,8 +14,6 @@ class MusicPlayerSmallSizeView: UIView {
     
     //MARK: Variables
     
-    
-//    var activeVCDelegate: ActiveViewControllerDelegate?
     var isPlaying : Bool = false {
         didSet{
             

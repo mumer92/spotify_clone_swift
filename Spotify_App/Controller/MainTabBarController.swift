@@ -8,12 +8,15 @@
 
 import UIKit
 
-class MainTabBarController: UITabBarController {
+class MainTabBarController: UITabBarController, UITabBarControllerDelegate {
     
-    //MARK: - NSLayoutConstraints
-    var topConstraintForAlbumsTableView : NSLayoutConstraint? 
-    
-    //MARK: - Variables
+    //MARK: - Layout Variables
+    var topConstraintForAlbumsTableView : NSLayoutConstraint?
+    var tabBarHeight: CGFloat {
+        get {
+            return tabBar.frame.height - bottomSafeAreaHeight
+        }
+    }
     var topSafeAreaHeight : CGFloat {
         get {
             if let window = UIApplication.shared.keyWindow , #available(iOS 11.0, *) {
@@ -33,34 +36,44 @@ class MainTabBarController: UITabBarController {
         }
     }
     
+    //MARK: - Variables
+    let musicPlayerViewController = MusicPlayerViewController()
+    var musicPlayerView = PlayerView()
     var originalTabBarFrame : CGRect? = nil
     let screenSize = UIScreen.main.bounds
     
     var firstTouchPosition : CGPoint?
     var locationChange: CGFloat = 0
     
-    var musicPlayerView = PlayerView()
+   
     
     //MARK: - View Appareance
     override func viewDidLoad() {
         super.viewDidLoad()
+        
+        tabBar.tintColor = .white
+        tabBar.barTintColor = UIColor(red: 40/255, green: 40/255, blue: 40/255, alpha: 255)
         
         originalTabBarFrame = tabBar.frame
         
         setupTabBars()
         setUpMusicPlayerView()
         
+        hidesBottomBarWhenPushed = true
+        
+        let tapGesture = UITapGestureRecognizer(target: self, action: #selector(tapGestureMakeFullScreen(gesture:)))
+        musicPlayerView.addGestureRecognizer(tapGesture)
         let panGesture = UIPanGestureRecognizer(target: self, action: #selector(handlePanGesture(gesture:)))
         musicPlayerView.addGestureRecognizer(panGesture)
         
+       self.view.bringSubviewToFront(tabBar) //This is to keep tabBar in front of music players item.
         
-        hidesBottomBarWhenPushed = true
-        
-        tabBar.tintColor = .white
-        tabBar.barTintColor = UIColor(red: 40/255, green: 40/255, blue: 40/255, alpha: 255)
     }
     
     //MARK: - Handle UIPanGestureRecognizer
+    @objc func tapGestureMakeFullScreen(gesture: UITapGestureRecognizer) {
+        playerFullScreenAnimation()
+    }
     @objc func handlePanGesture(gesture: UIPanGestureRecognizer) {
         if gesture.state == .began {
             firstTouchPosition = gesture.location(in: view)
@@ -70,79 +83,93 @@ class MainTabBarController: UITabBarController {
         }
         if gesture.state == .ended {
             handlePanGestureEnded(gesture: gesture)
+            //animations must work
         }
     }
     
     @objc func handlePanGestureChange(gesture: UIPanGestureRecognizer) {
         
+        let oldLocation = locationChange
         locationChange = (gesture.location(in: view).y) - (firstTouchPosition!.y) // positive value means it moved down. negative value means that it moved up
         
-        topConstraintForAlbumsTableView?.constant = (gesture.location(in: view).y) - (view.frame.height) + topSafeAreaHeight + bottomSafeAreaHeight
-        if (topConstraintForAlbumsTableView?.constant)! > -tabBar.frame.height  { //can't be smaller than -tabBar.frame.height
-            topConstraintForAlbumsTableView?.constant = -tabBar.frame.height + bottomSafeAreaHeight
-        }
-    
-    }
-    private func playerFullScreenAnimation() {
-
-        UIView.animate(withDuration: 2, delay: 0, options: [], animations: {
-            self.topConstraintForAlbumsTableView?.constant = (self.tabBar.frame.height) - (self.view.frame.height) + self.bottomSafeAreaHeight + self.topSafeAreaHeight + 10 //full screen
-            self.view.layoutIfNeeded()
-        }) { (true) in
-            
-        }
-    }
-    private func playerSmallScreenAnimation() {
+        let difference = locationChange - oldLocation
+        topConstraintForAlbumsTableView?.constant += difference
         
-        topConstraintForAlbumsTableView?.constant = -tabBar.frame.height
-
-        UIView.animate(withDuration: 0.1, delay: 0, options: [], animations: {
-            self.view.layoutIfNeeded()
-        }) { (true) in
-            
+        if (topConstraintForAlbumsTableView?.constant)! > -tabBarHeight  { //can't be smaller than -tabBar.frame.height
+            topConstraintForAlbumsTableView?.constant = -tabBarHeight
         }
     }
     @objc func handlePanGestureEnded(gesture: UIPanGestureRecognizer) {
-        print(gesture.location(in: view))
+        let limit = view.frame.height * 0.1
+        print("limit : " , limit)
+        if locationChange < 0 { // moved up
+            locationChange.magnitude > limit
+            playerFullScreenAnimation()
+        } else { // moved down
+            locationChange > limit
+            playerSmallScreenAnimation()
+        }
     }
-    
+
+    private func playerFullScreenAnimation() {
+//        let shouldMove: CGFloat =  -(view.frame.height) + bottomSafeAreaHeight //full screen topSafeAreaHeight
+          let shouldMove: CGFloat = -(view.frame.height) + topSafeAreaHeight  //full screen
+        topConstraintForAlbumsTableView?.constant = shouldMove
+        
+        
+//        self.selectedViewController = musicPlayerViewController
+        //musicPlayerViewController.isStatusBarHidden = true
+        
+        hideTabBar()
+        UIView.animate(withDuration: 0.2) {
+            self.setNeedsStatusBarAppearanceUpdate()
+            self.view.layoutIfNeeded()
+        }
+    }
+
+    //MARK: - bla bla
+    private func playerSmallScreenAnimation() {
+        showTabBar()
+        UIView.animate(withDuration: 0.2) {
+            self.topConstraintForAlbumsTableView?.constant = -self.tabBarHeight
+            self.view.layoutIfNeeded()
+        }
+    }
     func deneme() {
         print("deneme worked amk \n")
     }
     
     //MARK: - Functions
-    
     func showTabBar() {
-        
-        UIView.animate(withDuration: 1) {
-            if let originalTabBarFrame = self.originalTabBarFrame {
-                self.tabBar.frame = originalTabBarFrame
-                self.view.layoutIfNeeded()
-            }
+        UIView.animate(withDuration: 0.2) {
+            self.tabBar.center.y -= self.tabBar.frame.height
+            self.view.layoutIfNeeded()
         }
     }
+    
     func hideTabBar() {
-        UIView.animate(withDuration: 1) {
-            self.tabBar.frame = CGRect(origin: CGPoint(x: 0, y: self.screenSize.maxY), size: CGSize(width: self.screenSize.width, height:
-                (self.originalTabBarFrame?.height)!))
+        UIView.animate(withDuration: 0.2) {
+            self.tabBar.center.y += self.tabBar.frame.height
             self.view.layoutIfNeeded()
         }
     }
     
     //MARK: - Layout
-    
+    ///todo
     func setUpMusicPlayerView() {
-        let musicPlayerViewController = MusicPlayerViewController()
+        
         musicPlayerView = musicPlayerViewController.customView
         view.addSubview(musicPlayerView)
         addChild(musicPlayerViewController)
-        
+
         musicPlayerView.bottomAnchor.constraint(equalTo: tabBar.topAnchor).isActive = true
         musicPlayerView.leftAnchor.constraint(equalTo: tabBar.leftAnchor).isActive = true
         musicPlayerView.rightAnchor.constraint(equalTo: tabBar.rightAnchor).isActive = true
         topConstraintForAlbumsTableView = musicPlayerView.topAnchor.constraint(equalTo: musicPlayerView.bottomAnchor, constant: -tabBar.frame.height)
         topConstraintForAlbumsTableView?.isActive = true
+
     }
+    
     private func setupTabBars() {
         
         let homeViewController = UINavigationController(rootViewController: HomeViewController())

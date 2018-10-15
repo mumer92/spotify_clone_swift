@@ -9,33 +9,76 @@
 import Foundation
 import UIKit
 
+
 class MusicPlayerViewController: ViewController<PlayerView> {
+    
+     //MARK: - NSLayoutConstraints
+    var topConstraintForAlbumsTableView : NSLayoutConstraint?
+    //var tabBarHeight: CGFloat = 0
+    
+    
+    //MARK: - Variables
+    
+    var originalTabBarFrame : CGRect? = nil
+    let screenSize = UIScreen.main.bounds
+    
+    var firstTouchPosition : CGPoint?
+    var locationChange: CGFloat = 0
+
     
     //MARK: - Variables
     var smallCustomView = MusicPlayerSmallSizeView()
-    //var fullScreenCustomView = MusicPlayerSmallSizeView()
-    var isSmall: Bool = false {
+    var fullScreenCustomView = MusicPlayerFullScreenSizeView()
+    
+    var isSmall: Bool = true {
         didSet {
             if customView.isSmall {
-                isSmall = true
-            } else {
+                print("kuculdu")
                 isSmall = false
+                isStatusBarHidden = false
+            } else {
+                print("buyudu")
+                isSmall = true
+                isStatusBarHidden = true
             }
         }
     }
-
+    
+    
+    //MARK: - View Appareance
     override func viewDidLoad() {
         super.viewDidLoad()
-
         
-        print("view didload worked amk.. let's set MusicPalyersmallsizeview")
-    
-
-        smallCustomView = customView.smallSizeView
-        smallCustomView.upArrowButton.addTarget(self, action: #selector(deneme2), for: .touchUpInside)
         isSmall = true
+        
+        fullScreenCustomView = customView.fullScreenSizeView
+        smallCustomView = customView.smallSizeView
+        
+        smallCustomView.upArrowButton.addTarget(self, action: #selector(deneme2), for: .touchUpInside)
+        
+        //Setting up Gesture Recognizers
+        
+        
     }
     
+    //MARK: - Delegate Status Bar
+    var isStatusBarHidden: Bool = false {
+        didSet {
+            print("isStatisBarHidden : " , isStatusBarHidden)
+            UIView.animate(withDuration: 1.1) {
+                
+                self.setNeedsStatusBarAppearanceUpdate()
+            }
+        }
+    }
+    
+    override var preferredStatusBarUpdateAnimation: UIStatusBarAnimation {
+        return .slide
+    }
+    override var prefersStatusBarHidden: Bool {
+        return isStatusBarHidden
+    }
+
     @objc func deneme2() {
         print("deneme amk")
     }

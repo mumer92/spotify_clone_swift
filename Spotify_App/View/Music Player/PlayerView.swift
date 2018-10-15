@@ -14,6 +14,7 @@ class PlayerView: View {
     
     //MARK: - Variables
     var smallSizeView = MusicPlayerSmallSizeView()
+    var fullScreenSizeView = MusicPlayerFullScreenSizeView()
     var isPlaying : Bool = false {
         didSet{
             
@@ -35,7 +36,8 @@ class PlayerView: View {
         super.init(frame: frame)
         
         print("init workeeddddd")
-        setLayoutForSmallSize()
+//        setLayoutForSmallSize()
+        setLayoutForFullScreenSize()
         backgroundColor = grayColor
         translatesAutoresizingMaskIntoConstraints = false
     }
@@ -45,18 +47,20 @@ class PlayerView: View {
     }
     
     
-    
+    private func setLayoutForFullScreenSize() {
+        addSubview(fullScreenSizeView)
+        fullScreenSizeView.topAnchor.constraint(equalTo: topAnchor).isActive = true
+        fullScreenSizeView.bottomAnchor.constraint(equalTo: bottomAnchor).isActive = true
+        fullScreenSizeView.rightAnchor.constraint(equalTo: rightAnchor).isActive = true
+        fullScreenSizeView.leftAnchor.constraint(equalTo: leftAnchor).isActive = true
+    }
     private func setLayoutForSmallSize() {
-        print("setLayoutF")
         addSubview(smallSizeView)
-        //smallSizeView.translatesAutoresizingMaskIntoConstraints = false
         smallSizeView.topAnchor.constraint(equalTo: topAnchor).isActive = true
         smallSizeView.bottomAnchor.constraint(equalTo: bottomAnchor).isActive = true
         smallSizeView.rightAnchor.constraint(equalTo: rightAnchor).isActive = true
         smallSizeView.leftAnchor.constraint(equalTo: leftAnchor).isActive = true
     }
-    private func setLayoutForFullScreenSize() {
     
-    }
     
 }
