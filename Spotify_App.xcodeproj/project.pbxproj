@@ -7,10 +7,9 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		8A3601D521714EBC003935DC /* MusicPlayerSmallSizeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8A3601D421714EBC003935DC /* MusicPlayerSmallSizeView.swift */; };
 		8A44EB012172CE1A002C229C /* ButtonExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8A44EB002172CE1A002C229C /* ButtonExtension.swift */; };
 		8AC1926B2170D9F000C816C6 /* SetupHomeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8AC1926A2170D9F000C816C6 /* SetupHomeView.swift */; };
-		8AF4A60721727B140046C75B /* MusicPlayerFullScreenSizeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8AF4A60621727B140046C75B /* MusicPlayerFullScreenSizeView.swift */; };
+		8AF4A60721727B140046C75B /* PlayerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8AF4A60621727B140046C75B /* PlayerView.swift */; };
 		8AF6A6312170091700DC776C /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8AF6A6302170091700DC776C /* AppDelegate.swift */; };
 		8AF6A6332170091700DC776C /* MainTabBarController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8AF6A6322170091700DC776C /* MainTabBarController.swift */; };
 		8AF6A6382170091A00DC776C /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 8AF6A6372170091A00DC776C /* Assets.xcassets */; };
@@ -27,16 +26,14 @@
 		8AF6A65821700BD700DC776C /* SearchViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8AF6A65721700BD700DC776C /* SearchViewController.swift */; };
 		8AF6A65A21700BE300DC776C /* RadioViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8AF6A65921700BE300DC776C /* RadioViewController.swift */; };
 		8AF6A65C21700BF200DC776C /* LibraryViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8AF6A65B21700BF200DC776C /* LibraryViewController.swift */; };
-		8AF6A65E21700C4E00DC776C /* PlayerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8AF6A65D21700C4E00DC776C /* PlayerView.swift */; };
 		8AF6A66021700C8F00DC776C /* MusicPlayerViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8AF6A65F21700C8F00DC776C /* MusicPlayerViewController.swift */; };
 		8AF6A66321701A0100DC776C /* Colors.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8AF6A66221701A0100DC776C /* Colors.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
-		8A3601D421714EBC003935DC /* MusicPlayerSmallSizeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MusicPlayerSmallSizeView.swift; sourceTree = "<group>"; };
 		8A44EB002172CE1A002C229C /* ButtonExtension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ButtonExtension.swift; sourceTree = "<group>"; };
 		8AC1926A2170D9F000C816C6 /* SetupHomeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SetupHomeView.swift; sourceTree = "<group>"; };
-		8AF4A60621727B140046C75B /* MusicPlayerFullScreenSizeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MusicPlayerFullScreenSizeView.swift; sourceTree = "<group>"; };
+		8AF4A60621727B140046C75B /* PlayerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlayerView.swift; sourceTree = "<group>"; };
 		8AF6A62D2170091700DC776C /* Spotify_App.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Spotify_App.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		8AF6A6302170091700DC776C /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		8AF6A6322170091700DC776C /* MainTabBarController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainTabBarController.swift; sourceTree = "<group>"; };
@@ -55,7 +52,6 @@
 		8AF6A65721700BD700DC776C /* SearchViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SearchViewController.swift; sourceTree = "<group>"; };
 		8AF6A65921700BE300DC776C /* RadioViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RadioViewController.swift; sourceTree = "<group>"; };
 		8AF6A65B21700BF200DC776C /* LibraryViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LibraryViewController.swift; sourceTree = "<group>"; };
-		8AF6A65D21700C4E00DC776C /* PlayerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlayerView.swift; sourceTree = "<group>"; };
 		8AF6A65F21700C8F00DC776C /* MusicPlayerViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MusicPlayerViewController.swift; sourceTree = "<group>"; };
 		8AF6A66221701A0100DC776C /* Colors.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Colors.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -74,9 +70,7 @@
 		8A3601D321714EA2003935DC /* Music Player */ = {
 			isa = PBXGroup;
 			children = (
-				8AF6A65D21700C4E00DC776C /* PlayerView.swift */,
-				8A3601D421714EBC003935DC /* MusicPlayerSmallSizeView.swift */,
-				8AF4A60621727B140046C75B /* MusicPlayerFullScreenSizeView.swift */,
+				8AF4A60621727B140046C75B /* PlayerView.swift */,
 			);
 			path = "Music Player";
 			sourceTree = "<group>";
@@ -233,11 +227,9 @@
 				8AF6A66021700C8F00DC776C /* MusicPlayerViewController.swift in Sources */,
 				8AF6A6312170091700DC776C /* AppDelegate.swift in Sources */,
 				8AF6A66321701A0100DC776C /* Colors.swift in Sources */,
-				8A3601D521714EBC003935DC /* MusicPlayerSmallSizeView.swift in Sources */,
 				8AF6A64E21700B6500DC776C /* BrowseView.swift in Sources */,
-				8AF6A65E21700C4E00DC776C /* PlayerView.swift in Sources */,
 				8AF6A65621700BB800DC776C /* BrowseViewController.swift in Sources */,
-				8AF4A60721727B140046C75B /* MusicPlayerFullScreenSizeView.swift in Sources */,
+				8AF4A60721727B140046C75B /* PlayerView.swift in Sources */,
 				8AF6A65A21700BE300DC776C /* RadioViewController.swift in Sources */,
 				8AF6A64A21700A7100DC776C /* View.swift in Sources */,
 				8AC1926B2170D9F000C816C6 /* SetupHomeView.swift in Sources */,

@@ -8,16 +8,18 @@
 
 import Foundation
 import UIKit
-
-
+protocol ControlTabBarControllerDelegate: class {
+    func musicPlayerFullScreenAnimation()
+    func musicPlayerSmallScreenAnimation()
+}
+//ControlTabBarControllerDelegate
 class MusicPlayerViewController: ViewController<PlayerView> {
     
      //MARK: - NSLayoutConstraints
     var topConstraintForAlbumsTableView : NSLayoutConstraint?
-    //var tabBarHeight: CGFloat = 0
-    
     
     //MARK: - Variables
+    var controlTabBarControllerDelegate: ControlTabBarControllerDelegate?
     
     var originalTabBarFrame : CGRect? = nil
     let screenSize = UIScreen.main.bounds
@@ -27,19 +29,16 @@ class MusicPlayerViewController: ViewController<PlayerView> {
 
     
     //MARK: - Variables
-    var smallCustomView = MusicPlayerSmallSizeView()
-    var fullScreenCustomView = MusicPlayerFullScreenSizeView()
-    
     var isSmall: Bool = true {
         didSet {
-            if customView.isSmall {
-                print("kuculdu")
-                isSmall = false
-                isStatusBarHidden = false
+            if isSmall {
+                customView.isSmall = self.isSmall
+                print("Small")
+                controlTabBarControllerDelegate?.musicPlayerSmallScreenAnimation()
             } else {
-                print("buyudu")
-                isSmall = true
-                isStatusBarHidden = true
+                customView.isSmall = self.isSmall
+                print("FullScreen")
+                controlTabBarControllerDelegate?.musicPlayerFullScreenAnimation()
             }
         }
     }
@@ -51,14 +50,11 @@ class MusicPlayerViewController: ViewController<PlayerView> {
         
         isSmall = true
         
-        fullScreenCustomView = customView.fullScreenSizeView
-        smallCustomView = customView.smallSizeView
-        
-        smallCustomView.upArrowButton.addTarget(self, action: #selector(deneme2), for: .touchUpInside)
-        
+//        fullScreenCustomView = customView.fullScreenSizeView
+//        smallCustomView = customView.smallSizeView
+//        smallCustomView.upArrowButton.addTarget(self, action: #selector(deneme2), for: .touchUpInside)
         //Setting up Gesture Recognizers
-        
-        
+                customView.upDownArrowButton.addTarget(self, action: #selector(upDownArrowButtonAction), for: .touchUpInside)
     }
     
     //MARK: - Delegate Status Bar
@@ -79,8 +75,9 @@ class MusicPlayerViewController: ViewController<PlayerView> {
         return isStatusBarHidden
     }
 
-    @objc func deneme2() {
-        print("deneme amk")
+    @objc func upDownArrowButtonAction() {
+        isSmall = !isSmall
     }
     
 }
+

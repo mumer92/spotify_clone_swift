@@ -10,7 +10,6 @@ import Foundation
 import UIKit
 
 class HomeViewController: ViewController<HomeView> {
-    //override var tabBarController: UITabBarController?
     var customTabBarController: MainTabBarController? = nil
     
     override func viewWillAppear(_ animated: Bool) {
@@ -23,7 +22,7 @@ class HomeViewController: ViewController<HomeView> {
         }
         
         customTabBarController = tabBarCntrllr
-        customTabBarController?.deneme()
+
     }
     override func viewDidLoad() {
         super.viewDidLoad()

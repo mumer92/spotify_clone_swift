@@ -8,11 +8,13 @@
 
 import UIKit
 
-class MainTabBarController: UITabBarController, UITabBarControllerDelegate {
+
+class MainTabBarController: UITabBarController, ControlTabBarControllerDelegate {
+    
     
     //MARK: - Layout Variables
     var topConstraintForAlbumsTableView : NSLayoutConstraint?
-    var tabBarHeight: CGFloat {
+    var tabBarHeightWithoutSafeBottom: CGFloat {
         get {
             return tabBar.frame.height - bottomSafeAreaHeight
         }
@@ -36,21 +38,27 @@ class MainTabBarController: UITabBarController, UITabBarControllerDelegate {
         }
     }
     
+     //distance to take it to full screen
+    var distanceToFullScreen: CGFloat {
+        get {
+            return topSafeAreaHeight - view.frame.height
+        }
+    }
+    
     //MARK: - Variables
     let musicPlayerViewController = MusicPlayerViewController()
     var musicPlayerView = PlayerView()
     var originalTabBarFrame : CGRect? = nil
     let screenSize = UIScreen.main.bounds
     
-    var firstTouchPosition : CGPoint?
+    var firstTouchPositionY : CGFloat?
     var locationChange: CGFloat = 0
     
    
-    
     //MARK: - View Appareance
     override func viewDidLoad() {
         super.viewDidLoad()
-        
+        musicPlayerViewController.controlTabBarControllerDelegate = self
         tabBar.tintColor = .white
         tabBar.barTintColor = UIColor(red: 40/255, green: 40/255, blue: 40/255, alpha: 255)
         
@@ -72,90 +80,91 @@ class MainTabBarController: UITabBarController, UITabBarControllerDelegate {
     
     //MARK: - Handle UIPanGestureRecognizer
     @objc func tapGestureMakeFullScreen(gesture: UITapGestureRecognizer) {
-        playerFullScreenAnimation()
+        musicPlayerFullScreenAnimation()
     }
     @objc func handlePanGesture(gesture: UIPanGestureRecognizer) {
         if gesture.state == .began {
-            firstTouchPosition = gesture.location(in: view)
+            firstTouchPositionY = gesture.location(in: view).y
         }
         if gesture.state == .changed {
             handlePanGestureChange(gesture: gesture)
         }
         if gesture.state == .ended {
             handlePanGestureEnded(gesture: gesture)
-            //animations must work
         }
     }
     
+    
+     ///TODO Doesn't work very well. fix it later on.
     @objc func handlePanGestureChange(gesture: UIPanGestureRecognizer) {
-        
         let oldLocation = locationChange
-        locationChange = (gesture.location(in: view).y) - (firstTouchPosition!.y) // positive value means it moved down. negative value means that it moved up
-        
+        locationChange = (gesture.location(in: view).y) - (firstTouchPositionY!) // positive value means it moved down. negative value means that it moved up
         let difference = locationChange - oldLocation
         topConstraintForAlbumsTableView?.constant += difference
-        
-        if (topConstraintForAlbumsTableView?.constant)! > -tabBarHeight  { //can't be smaller than -tabBar.frame.height
-            topConstraintForAlbumsTableView?.constant = -tabBarHeight
+        if (topConstraintForAlbumsTableView?.constant)! > -tabBarHeightWithoutSafeBottom  { //can't be smaller than -tabBar.frame.height
+            topConstraintForAlbumsTableView?.constant = -tabBarHeightWithoutSafeBottom
         }
     }
     @objc func handlePanGestureEnded(gesture: UIPanGestureRecognizer) {
-        let limit = view.frame.height * 0.1
-        print("limit : " , limit)
-        if locationChange < 0 { // moved up
-            locationChange.magnitude > limit
-            playerFullScreenAnimation()
-        } else { // moved down
-            locationChange > limit
-            playerSmallScreenAnimation()
+        let limit = view.frame.height * 0.15
+        
+        if musicPlayerViewController.isSmall  { // music player in small screen mode
+            if locationChange.magnitude > limit { // make it full screen if user exceeded the limit
+                musicPlayerFullScreenAnimation()
+                musicPlayerViewController.isSmall = false
+            } else {
+                musicPlayerSmallScreenAnimation()
+            }
+        } else { // music player in full screen mode
+            if locationChange.magnitude > limit { // make it full screen if user exceeded the limit
+                musicPlayerSmallScreenAnimation()
+                musicPlayerViewController.isSmall = true
+            } else {
+                musicPlayerFullScreenAnimation()
+            }
+            
         }
     }
 
-    private func playerFullScreenAnimation() {
-//        let shouldMove: CGFloat =  -(view.frame.height) + bottomSafeAreaHeight //full screen topSafeAreaHeight
-          let shouldMove: CGFloat = -(view.frame.height) + topSafeAreaHeight  //full screen
-        topConstraintForAlbumsTableView?.constant = shouldMove
+    func musicPlayerFullScreenAnimation() {
         
-        
-//        self.selectedViewController = musicPlayerViewController
-        //musicPlayerViewController.isStatusBarHidden = true
-        
+        musicPlayerViewController.isSmall = false
         hideTabBar()
+        topConstraintForAlbumsTableView?.constant = distanceToFullScreen
         UIView.animate(withDuration: 0.2) {
-            self.setNeedsStatusBarAppearanceUpdate()
             self.view.layoutIfNeeded()
         }
+        
     }
-
-    //MARK: - bla bla
-    private func playerSmallScreenAnimation() {
+    func musicPlayerSmallScreenAnimation() {
+//        musicPlayerViewController.isSmall = true
         showTabBar()
+        topConstraintForAlbumsTableView?.constant = -tabBarHeightWithoutSafeBottom
         UIView.animate(withDuration: 0.2) {
-            self.topConstraintForAlbumsTableView?.constant = -self.tabBarHeight
             self.view.layoutIfNeeded()
         }
+        
     }
-    func deneme() {
-        print("deneme worked amk \n")
-    }
-    
+   
     //MARK: - Functions
     func showTabBar() {
+        tabBar.center.y = view.frame.height - tabBar.frame.height / 2
         UIView.animate(withDuration: 0.2) {
-            self.tabBar.center.y -= self.tabBar.frame.height
             self.view.layoutIfNeeded()
         }
     }
     
     func hideTabBar() {
+//        tabBar.center.y += tabBar.frame.height
+//        tabBar.center.y = view.frame.heigsmht + tabBar.center.y
+        tabBar.center.y = view.frame.height + tabBar.frame.height / 2
+        
         UIView.animate(withDuration: 0.2) {
-            self.tabBar.center.y += self.tabBar.frame.height
             self.view.layoutIfNeeded()
         }
     }
     
     //MARK: - Layout
-    ///todo
     func setUpMusicPlayerView() {
         
         musicPlayerView = musicPlayerViewController.customView
