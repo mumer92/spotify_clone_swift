@@ -33,11 +33,9 @@ class MusicPlayerViewController: ViewController<PlayerView> {
         didSet {
             if isSmall {
                 customView.isSmall = self.isSmall
-                print("Small")
                 controlTabBarControllerDelegate?.musicPlayerSmallScreenAnimation()
             } else {
                 customView.isSmall = self.isSmall
-                print("FullScreen")
                 controlTabBarControllerDelegate?.musicPlayerFullScreenAnimation()
             }
         }
@@ -49,12 +47,9 @@ class MusicPlayerViewController: ViewController<PlayerView> {
         super.viewDidLoad()
         
         isSmall = true
-        
-//        fullScreenCustomView = customView.fullScreenSizeView
-//        smallCustomView = customView.smallSizeView
-//        smallCustomView.upArrowButton.addTarget(self, action: #selector(deneme2), for: .touchUpInside)
+
         //Setting up Gesture Recognizers
-                customView.upDownArrowButton.addTarget(self, action: #selector(upDownArrowButtonAction), for: .touchUpInside)
+        customView.upDownArrowButton.addTarget(self, action: #selector(upDownArrowButtonAction), for: .touchUpInside)
     }
     
     //MARK: - Delegate Status Bar

@@ -97,38 +97,44 @@ class MainTabBarController: UITabBarController, ControlTabBarControllerDelegate 
     
      ///TODO Doesn't work very well. fix it later on.
     @objc func handlePanGestureChange(gesture: UIPanGestureRecognizer) {
+        
+        //limiti astiginda degistir amk musicPlayerViewController.isSmall = true  or false diye degistir.
+        let limit = view.frame.height * 0.15
+        
+        
         let oldLocation = locationChange
+    
         locationChange = (gesture.location(in: view).y) - (firstTouchPositionY!) // positive value means it moved down. negative value means that it moved up
         let difference = locationChange - oldLocation
         topConstraintForAlbumsTableView?.constant += difference
+        
+        if locationChange < 0 {
+            if locationChange.magnitude > limit {
+                musicPlayerViewController.isSmall = false
+            }
+        } else { //moving down
+            if locationChange > limit {
+                musicPlayerViewController.isSmall = true
+            }
+        }
+        
+        
         if (topConstraintForAlbumsTableView?.constant)! > -tabBarHeightWithoutSafeBottom  { //can't be smaller than -tabBar.frame.height
             topConstraintForAlbumsTableView?.constant = -tabBarHeightWithoutSafeBottom
         }
     }
     @objc func handlePanGestureEnded(gesture: UIPanGestureRecognizer) {
-        let limit = view.frame.height * 0.15
         
-        if musicPlayerViewController.isSmall  { // music player in small screen mode
-            if locationChange.magnitude > limit { // make it full screen if user exceeded the limit
-                musicPlayerFullScreenAnimation()
-                musicPlayerViewController.isSmall = false
-            } else {
-                musicPlayerSmallScreenAnimation()
-            }
-        } else { // music player in full screen mode
-            if locationChange.magnitude > limit { // make it full screen if user exceeded the limit
-                musicPlayerSmallScreenAnimation()
-                musicPlayerViewController.isSmall = true
-            } else {
-                musicPlayerFullScreenAnimation()
-            }
-            
+        if musicPlayerViewController.isSmall {
+            musicPlayerSmallScreenAnimation()
+        } else {
+            musicPlayerFullScreenAnimation()
         }
     }
 
+    ////TODO
     func musicPlayerFullScreenAnimation() {
-        
-        musicPlayerViewController.isSmall = false
+//        musicPlayerViewController.isSmall = false
         hideTabBar()
         topConstraintForAlbumsTableView?.constant = distanceToFullScreen
         UIView.animate(withDuration: 0.2) {
@@ -136,6 +142,7 @@ class MainTabBarController: UITabBarController, ControlTabBarControllerDelegate 
         }
         
     }
+    ///TODO
     func musicPlayerSmallScreenAnimation() {
 //        musicPlayerViewController.isSmall = true
         showTabBar()

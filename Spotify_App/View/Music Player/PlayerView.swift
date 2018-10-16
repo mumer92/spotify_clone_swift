@@ -8,9 +8,11 @@
 
 import Foundation
 import UIKit
+import AVFoundation
 
-//class MusicPlayerFullScreenSizeView: UIView {
+
 class PlayerView: View {
+    
     //MARK: Constraint Variables
     var bottomConstraintForAvaibleDevicesButton: NSLayoutConstraint?
     
@@ -21,26 +23,31 @@ class PlayerView: View {
         }
     }
     var isSmall: Bool = true {
+        
         didSet {
+            
             if isSmall {
-//                let image = UIImage(named: "up_arrow")?.withRenderingMode(.alwaysTemplate)
-//                upDownArrowButton.setImage(image, for: .normal)
-//
-//                let pauseImage = UIImage(named: "pause_small")?.withRenderingMode(.alwaysTemplate)
-//                playListButton.setImage(pauseImage, for: .normal)
+                
+                let image = UIImage(named: "up_arrow")?.withRenderingMode(.alwaysTemplate)
+                upDownArrowButton.setImage(image, for: .normal)
+
+                let pauseImage = UIImage(named: "pause_small")?.withRenderingMode(.alwaysTemplate)
+                playListButton.setImage(pauseImage, for: .normal)
                 
                 upDownArrowButton.tintColor = .white
                 bottomConstraintForAvaibleDevicesButton?.constant = -2
+                layoutIfNeeded()
             } else { //FullScreen
-//
-//                let image = UIImage(named: "down_arrow")?.withRenderingMode(.alwaysTemplate)
-//                upDownArrowButton.setImage(image, for: .normal)
-//                let playListImage = UIImage(named: "playlist")?.withRenderingMode(.alwaysTemplate)
-//
-//                playListButton.setImage(playListImage, for: .normal)
+
+                let image = UIImage(named: "down_arrow")?.withRenderingMode(.alwaysTemplate)
+                upDownArrowButton.setImage(image, for: .normal)
+                
+                let playListImage = UIImage(named: "playlist")?.withRenderingMode(.alwaysTemplate)
+                playListButton.setImage(playListImage, for: .normal)
                 
                 upDownArrowButton.tintColor = .white
                 bottomConstraintForAvaibleDevicesButton?.constant = -idealGapBetweenItems
+                layoutIfNeeded()
             }
         }
     }
@@ -244,12 +251,11 @@ class PlayerView: View {
         ///Avaible Devices
         avaibleDevicesButton.centerXAnchor.constraint(equalTo: centerXAnchor).isActive = true
         avaibleDevicesButton.widthAnchor.constraint(equalTo: widthAnchor, multiplier: 0.4).isActive = true
-        bottomConstraintForAvaibleDevicesButton = avaibleDevicesButton.bottomAnchor.constraint(equalTo: bottomAnchor, constant: -2)
+        bottomConstraintForAvaibleDevicesButton = avaibleDevicesButton.bottomAnchor.constraint(equalTo: bottomAnchor)
         bottomConstraintForAvaibleDevicesButton?.isActive = true
     }
     
     private func setupStackViews() {
-        
         
         let topStackView = UIStackView(arrangedSubviews: [upDownArrowButton,playlistInfoLabel,playListButton])
         topStackView.distribution = .equalSpacing
