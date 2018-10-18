@@ -8,8 +8,6 @@
 
 import Foundation
 import UIKit
-import AVFoundation
-
 
 class PlayerView: View {
     
@@ -17,43 +15,41 @@ class PlayerView: View {
     var bottomConstraintForAvaibleDevicesButton: NSLayoutConstraint?
     
     //MARK: Variables
-    var isPlaying : Bool = false {
-        didSet{
-            
-        }
-    }
     var isSmall: Bool = true {
-        
         didSet {
-            
             if isSmall {
-                
-                let image = UIImage(named: "up_arrow")?.withRenderingMode(.alwaysTemplate)
-                upDownArrowButton.setImage(image, for: .normal)
-
-                let pauseImage = UIImage(named: "pause_small")?.withRenderingMode(.alwaysTemplate)
-                playListButton.setImage(pauseImage, for: .normal)
-                
-                upDownArrowButton.tintColor = .white
-                bottomConstraintForAvaibleDevicesButton?.constant = -2
-                layoutIfNeeded()
+                updateDisplayForSmallView()
             } else { //FullScreen
-
-                let image = UIImage(named: "down_arrow")?.withRenderingMode(.alwaysTemplate)
-                upDownArrowButton.setImage(image, for: .normal)
-                
-                let playListImage = UIImage(named: "playlist")?.withRenderingMode(.alwaysTemplate)
-                playListButton.setImage(playListImage, for: .normal)
-                
-                upDownArrowButton.tintColor = .white
-                bottomConstraintForAvaibleDevicesButton?.constant = -idealGapBetweenItems
-                layoutIfNeeded()
+                updateDisplayForFullScreenView()
             }
         }
     }
+    //todo carry theme under mark:-layout
+    private func updateDisplayForSmallView() {
+        let image = UIImage(named: "up_arrow")?.withRenderingMode(.alwaysTemplate)
+        upDownArrowButton.setImage(image, for: .normal)
+        let playImage = UIImage(named: "play_18")?.withRenderingMode(.alwaysTemplate)
+        playListButton.setImage(playImage, for: .normal)
+        
+        upDownArrowButton.tintColor = .white
+        bottomConstraintForAvaibleDevicesButton?.constant = -2
+        layoutIfNeeded()
+    }
+    private func updateDisplayForFullScreenView() {
+        
+        let image = UIImage(named: "down_arrow")?.withRenderingMode(.alwaysTemplate)
+        upDownArrowButton.setImage(image, for: .normal)
+        
+        let playListImage = UIImage(named: "playlist")?.withRenderingMode(.alwaysTemplate)
+        playListButton.setImage(playListImage, for: .normal)
+        
+        upDownArrowButton.tintColor = .white
+        bottomConstraintForAvaibleDevicesButton?.constant = -idealGapBetweenItems
+        layoutIfNeeded()
+    }
     var idealGapBetweenItems : CGFloat  {
         get {
-            return UIScreen.main.bounds.height / 25
+            return UIScreen.main.bounds.height / 35
         }
     }
     //MARK: - Items
@@ -77,13 +73,15 @@ class PlayerView: View {
         label.translatesAutoresizingMaskIntoConstraints = false
         label.text = "Playing from Playlist"
         label.textColor = .white
+        label.numberOfLines = 2
         label.font = .systemFont(ofSize: 15)
         return label
     }()
     
     //MARK: - Song Information and options
-    var songInfoLabel : UILabel = {
+    var songNameLabel : UILabel = {
         let label = UILabel()
+        label.numberOfLines = 2
         label.text = "Sivasin Yollarina"
         label.textColor = .white
         label.translatesAutoresizingMaskIntoConstraints = false
@@ -106,12 +104,32 @@ class PlayerView: View {
     
     var timePassedInfoLabel : UILabel = {
         let label = UILabel()
-        label.text = "2:45"
+        label.text = "00:00"
         label.textColor = .gray
         label.font = .systemFont(ofSize: 15)
         label.translatesAutoresizingMaskIntoConstraints = false
         return label
     }()
+    
+    var timeUpdaterDisplay : UISlider = {
+        let timeUpdateDisplay = UISlider()
+ 
+        let image = UIImage(named: "circle")?.withRenderingMode(.alwaysTemplate).maskWithColor(color: UIColor.white)
+        let image2 = UIImage(named: "circle_2")?.withRenderingMode(.alwaysTemplate).maskWithColor(color: UIColor.white)
+        
+        timeUpdateDisplay.isContinuous = true
+        
+        timeUpdateDisplay.tintColor = .white
+        timeUpdateDisplay.maximumTrackTintColor = .gray
+        
+        timeUpdateDisplay.setThumbImage(image, for: .normal)
+        timeUpdateDisplay.setThumbImage(image2, for: .highlighted)
+        
+        timeUpdateDisplay.translatesAutoresizingMaskIntoConstraints = false
+        
+        return timeUpdateDisplay
+    }()
+    
     
     var totalTimeInfoLabel : UILabel = {
         let label = UILabel()
@@ -126,7 +144,7 @@ class PlayerView: View {
     //MARK: - Player Controls
     var playButton : UIButton = {
         
-        let image = UIImage(named: "pause_small")?.withRenderingMode(.alwaysTemplate)
+        let image = UIImage(named: "play_small")?.withRenderingMode(.alwaysTemplate)
 
         let button = UIButton(type: .custom, backgroundColor: nil, image: image, imageTintColor: .white)
         return button
@@ -145,13 +163,17 @@ class PlayerView: View {
     }()
     var shuffleButton : UIButton = {
         let image = UIImage(named: "shuffle")?.withRenderingMode(.alwaysTemplate)
-        let button = UIButton(type: .custom, backgroundColor: nil, image: image, imageTintColor: .gray)
+        let button = UIButton(type: .custom)
+        button.setImage(image, for: .normal)
+        button.tintColor = .gray
         
         return button
     }()
     var repeatButton : UIButton = {
         let image = UIImage(named: "repeat")?.withRenderingMode(.alwaysTemplate)
-        let button = UIButton(type: .custom, backgroundColor: nil, image: image, imageTintColor: .gray)
+        let button = UIButton(type: .custom)
+        button.setImage(image, for: .normal)
+        button.tintColor = .gray
         
         return button
     }()
@@ -162,7 +184,7 @@ class PlayerView: View {
         let image = UIImage(named: "devices")?.withRenderingMode(.alwaysTemplate)
         let button = UIButton(type: .custom, backgroundColor: nil, image: image, imageTintColor: .white)
         button.setTitle(" Devices Avaible", for: .normal)
-        button.titleLabel?.font = .systemFont(ofSize: 13)
+        button.titleLabel?.font = .systemFont(ofSize: 12)
         
         return button
     }()
@@ -193,27 +215,16 @@ class PlayerView: View {
         fatalError("init(coder:) has not been implemented")
     }
     
-    
+    override func tintColorDidChange() {
+        print("color changed amina kodumun yerinde")
+    }
       //MARK: - Layout
    override func setViews() {
-        addSubview(shuffleButton)
-        addSubview(previousSongButton)
-        addSubview(playButton)
-        addSubview(nextSongButton)
-        addSubview(repeatButton)
-        
+    
         addSubview(imageView)
-        addSubview(upDownArrowButton)
-        addSubview(playListButton)
-        
-        addSubview(timePassedInfoLabel)
-        addSubview(totalTimeInfoLabel)
-        
-        addSubview(addToLibraryButton)
-        addSubview(songInfoLabel)
-        addSubview(optionsButton)
-        
+        addSubview(timeUpdaterDisplay)
         addSubview(avaibleDevicesButton)
+    
     }
     override func layoutViews() {
         
@@ -265,24 +276,29 @@ class PlayerView: View {
         
         addSubview(topStackView)
         topStackView.centerXAnchor.constraint(equalTo: centerXAnchor).isActive = true
-        topStackView.topAnchor.constraint(equalTo: topAnchor).isActive = true
-        topStackView.widthAnchor.constraint(equalTo: widthAnchor).isActive = true
+        topStackView.topAnchor.constraint(equalTo: topAnchor, constant: 1).isActive = true
+        topStackView.widthAnchor.constraint(equalTo: widthAnchor, multiplier: 0.95).isActive = true
         topStackView.heightAnchor.constraint(equalToConstant: 35).isActive = true
         
         imageView.topAnchor.constraint(equalTo: topStackView.bottomAnchor, constant: idealGapBetweenItems).isActive = true
         
         
-        let sonInformationStackView = UIStackView(arrangedSubviews: [addToLibraryButton,songInfoLabel,optionsButton])
-        sonInformationStackView.distribution = .equalSpacing
-        sonInformationStackView.axis = .horizontal
-        sonInformationStackView.translatesAutoresizingMaskIntoConstraints = false
-        sonInformationStackView.alignment = .center
+        let songInformationStackView = UIStackView(arrangedSubviews: [addToLibraryButton,songNameLabel,optionsButton])
+        songInformationStackView.distribution = .equalSpacing
+        songInformationStackView.spacing = 0.5
+        songInformationStackView.axis = .horizontal
+        songInformationStackView.translatesAutoresizingMaskIntoConstraints = false
+        songInformationStackView.alignment = .center
         
-        addSubview(sonInformationStackView)
-        sonInformationStackView.centerXAnchor.constraint(equalTo: centerXAnchor).isActive = true
-        sonInformationStackView.topAnchor.constraint(equalTo: imageView.bottomAnchor, constant: 5).isActive = true
-        sonInformationStackView.widthAnchor.constraint(equalTo: widthAnchor, multiplier: 0.8).isActive = true
-        sonInformationStackView.heightAnchor.constraint(equalToConstant: 60).isActive = true
+        addSubview(songInformationStackView)
+        
+        songInformationStackView.subviews[1].widthAnchor.constraint(equalTo: widthAnchor, multiplier: 0.65).isActive = true
+        
+        songInformationStackView.centerXAnchor.constraint(equalTo: centerXAnchor).isActive = true
+        songInformationStackView.topAnchor.constraint(equalTo: imageView.bottomAnchor, constant: 5).isActive = true
+        songInformationStackView.widthAnchor.constraint(equalTo: widthAnchor, multiplier: 0.90).isActive = true
+        
+        songInformationStackView.heightAnchor.constraint(equalToConstant: 80).isActive = true
         
         
         let timeLabelsStackView = UIStackView(arrangedSubviews: [timePassedInfoLabel, totalTimeInfoLabel])
@@ -293,9 +309,16 @@ class PlayerView: View {
         timeLabelsStackView.axis = .horizontal
         
         timeLabelsStackView.centerXAnchor.constraint(equalTo: centerXAnchor).isActive = true
-        timeLabelsStackView.topAnchor.constraint(equalTo: sonInformationStackView.bottomAnchor, constant: idealGapBetweenItems).isActive = true
+        timeLabelsStackView.topAnchor.constraint(equalTo: songInformationStackView.bottomAnchor, constant: idealGapBetweenItems).isActive = true
         timeLabelsStackView.widthAnchor.constraint(equalTo: widthAnchor, multiplier: 0.9).isActive = true
         timeLabelsStackView.heightAnchor.constraint(equalToConstant: 25).isActive = true
+        
+        timeUpdaterDisplay.widthAnchor.constraint(equalTo: widthAnchor, multiplier: 0.9).isActive = true
+        timeUpdaterDisplay.heightAnchor.constraint(equalToConstant: 15).isActive = true
+        timeUpdaterDisplay.topAnchor.constraint(equalTo: timeLabelsStackView.bottomAnchor, constant: 5).isActive = true
+        timeUpdaterDisplay.leftAnchor.constraint(equalTo: timeLabelsStackView.leftAnchor).isActive = true
+        
+        
         
         let playerControllerStackView = UIStackView(arrangedSubviews: [shuffleButton, previousSongButton, playButton, nextSongButton, repeatButton])
         addSubview(playerControllerStackView)
@@ -305,7 +328,7 @@ class PlayerView: View {
         playerControllerStackView.axis = .horizontal
         
         playerControllerStackView.centerXAnchor.constraint(equalTo: centerXAnchor).isActive = true
-        playerControllerStackView.topAnchor.constraint(equalTo: timeLabelsStackView.bottomAnchor, constant: idealGapBetweenItems).isActive = true
+        playerControllerStackView.topAnchor.constraint(equalTo: timeUpdaterDisplay.bottomAnchor, constant: idealGapBetweenItems).isActive = true
         playerControllerStackView.widthAnchor.constraint(equalTo: widthAnchor, multiplier: 0.8).isActive = true
         playerControllerStackView.heightAnchor.constraint(equalToConstant: 100).isActive = true
         

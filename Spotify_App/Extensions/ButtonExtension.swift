@@ -17,6 +17,5 @@ extension UIButton {
         self.backgroundColor = backgroundColor
         setImage(image, for: .normal)
         imageView?.tintColor = imageTintColor
-
     }
 }

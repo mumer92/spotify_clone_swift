@@ -53,11 +53,11 @@ class MainTabBarController: UITabBarController, ControlTabBarControllerDelegate 
     
     var firstTouchPositionY : CGFloat?
     var locationChange: CGFloat = 0
-    
    
     //MARK: - View Appareance
     override func viewDidLoad() {
         super.viewDidLoad()
+        
         musicPlayerViewController.controlTabBarControllerDelegate = self
         tabBar.tintColor = .white
         tabBar.barTintColor = UIColor(red: 40/255, green: 40/255, blue: 40/255, alpha: 255)
@@ -71,15 +71,16 @@ class MainTabBarController: UITabBarController, ControlTabBarControllerDelegate 
         
         let tapGesture = UITapGestureRecognizer(target: self, action: #selector(tapGestureMakeFullScreen(gesture:)))
         musicPlayerView.addGestureRecognizer(tapGesture)
+        
         let panGesture = UIPanGestureRecognizer(target: self, action: #selector(handlePanGesture(gesture:)))
         musicPlayerView.addGestureRecognizer(panGesture)
         
        self.view.bringSubviewToFront(tabBar) //This is to keep tabBar in front of music players item.
-        
     }
     
     //MARK: - Handle UIPanGestureRecognizer
     @objc func tapGestureMakeFullScreen(gesture: UITapGestureRecognizer) {
+        musicPlayerViewController.isSmall = false
         musicPlayerFullScreenAnimation()
     }
     @objc func handlePanGesture(gesture: UIPanGestureRecognizer) {
@@ -134,20 +135,19 @@ class MainTabBarController: UITabBarController, ControlTabBarControllerDelegate 
 
     ////TODO
     func musicPlayerFullScreenAnimation() {
-//        musicPlayerViewController.isSmall = false
+        
         hideTabBar()
-        topConstraintForAlbumsTableView?.constant = distanceToFullScreen
         UIView.animate(withDuration: 0.2) {
+            self.topConstraintForAlbumsTableView?.constant = self.distanceToFullScreen
             self.view.layoutIfNeeded()
         }
         
     }
     ///TODO
     func musicPlayerSmallScreenAnimation() {
-//        musicPlayerViewController.isSmall = true
         showTabBar()
-        topConstraintForAlbumsTableView?.constant = -tabBarHeightWithoutSafeBottom
         UIView.animate(withDuration: 0.2) {
+            self.topConstraintForAlbumsTableView?.constant = -self.tabBarHeightWithoutSafeBottom
             self.view.layoutIfNeeded()
         }
         
@@ -155,18 +155,15 @@ class MainTabBarController: UITabBarController, ControlTabBarControllerDelegate 
    
     //MARK: - Functions
     func showTabBar() {
-        tabBar.center.y = view.frame.height - tabBar.frame.height / 2
         UIView.animate(withDuration: 0.2) {
+            self.tabBar.center.y = self.view.frame.height - self.tabBar.frame.height / 2
             self.view.layoutIfNeeded()
         }
     }
     
     func hideTabBar() {
-//        tabBar.center.y += tabBar.frame.height
-//        tabBar.center.y = view.frame.heigsmht + tabBar.center.y
-        tabBar.center.y = view.frame.height + tabBar.frame.height / 2
-        
         UIView.animate(withDuration: 0.2) {
+            self.tabBar.center.y = self.view.frame.height + self.tabBar.frame.height / 2
             self.view.layoutIfNeeded()
         }
     }
