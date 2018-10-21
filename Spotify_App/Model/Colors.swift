@@ -11,10 +11,3 @@ import UIKit
 
 let grayColor = UIColor(red: 40/255, green: 40/255, blue: 40/255, alpha: 255)
 
-class Colors {
-    
-    //        RGBString :  R: 40, G: 40,  B: 40, A: 255
-    //        hexColor :  #282828
-    //let grayColor = UIColor(red: 40/255, green: 40/255, blue: 40/255, alpha: 255)
-    //static let grayColor = UIColor(red: 40/255, green: 40/255, blue: 40/255, alpha: 255)
-}

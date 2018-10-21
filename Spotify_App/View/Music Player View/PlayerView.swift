@@ -102,7 +102,7 @@ class PlayerView: View {
     
     //MARK: - Song's Time Information
     
-    var timePassedInfoLabel : UILabel = {
+    var secondPassedInfoLabel : UILabel = {
         let label = UILabel()
         label.text = "00:00"
         label.textColor = .gray
@@ -189,14 +189,20 @@ class PlayerView: View {
         return button
     }()
     
-    var imageView : UIImageView = { // Must be collection view ///TODO
-        let imageView = UIImageView()
-        imageView.translatesAutoresizingMaskIntoConstraints = false
+//    var imageView : UIImageView = { // Must be collection view ///TODO
+//        let imageView = UIImageView()
+//        imageView.translatesAutoresizingMaskIntoConstraints = false
+//
+//        let image = UIImage(named: "masashi")?.withRenderingMode(.alwaysTemplate)
+//        imageView.image = image
+//
+//        return imageView
+//    }()
+    var albumCoverCollectionView : AlbumCoverCollectionView = { // Must be collection view ///TODO
+        let cv = AlbumCoverCollectionView()
+        cv.translatesAutoresizingMaskIntoConstraints = false
         
-        let image = UIImage(named: "masashi")?.withRenderingMode(.alwaysTemplate)
-        imageView.image = image
-        
-        return imageView
+        return cv
     }()
    
     
@@ -220,8 +226,8 @@ class PlayerView: View {
     }
       //MARK: - Layout
    override func setViews() {
-    
-        addSubview(imageView)
+        addSubview(albumCoverCollectionView)
+//        addSubview(imageView)
         addSubview(timeUpdaterDisplay)
         addSubview(avaibleDevicesButton)
     
@@ -237,10 +243,10 @@ class PlayerView: View {
         
         
         //setting up top Anchor in setupStackView function
-        imageView.centerXAnchor.constraint(equalTo: centerXAnchor).isActive = true
-        imageView.widthAnchor.constraint(equalTo: widthAnchor, multiplier: 0.8).isActive = true
+        albumCoverCollectionView.centerXAnchor.constraint(equalTo: centerXAnchor).isActive = true
+        albumCoverCollectionView.widthAnchor.constraint(equalTo: widthAnchor, multiplier: 1).isActive = true
         let idealHeightForImageView = UIScreen.main.bounds.height / 3
-        imageView.heightAnchor.constraint(equalToConstant: idealHeightForImageView).isActive = true //gotta change it. todo
+        albumCoverCollectionView.heightAnchor.constraint(equalToConstant: idealHeightForImageView).isActive = true //gotta change it. todo
         
         
         //Player
@@ -280,7 +286,7 @@ class PlayerView: View {
         topStackView.widthAnchor.constraint(equalTo: widthAnchor, multiplier: 0.95).isActive = true
         topStackView.heightAnchor.constraint(equalToConstant: 35).isActive = true
         
-        imageView.topAnchor.constraint(equalTo: topStackView.bottomAnchor, constant: idealGapBetweenItems).isActive = true
+        albumCoverCollectionView.topAnchor.constraint(equalTo: topStackView.bottomAnchor, constant: idealGapBetweenItems).isActive = true
         
         
         let songInformationStackView = UIStackView(arrangedSubviews: [addToLibraryButton,songNameLabel,optionsButton])
@@ -295,13 +301,13 @@ class PlayerView: View {
         songInformationStackView.subviews[1].widthAnchor.constraint(equalTo: widthAnchor, multiplier: 0.65).isActive = true
         
         songInformationStackView.centerXAnchor.constraint(equalTo: centerXAnchor).isActive = true
-        songInformationStackView.topAnchor.constraint(equalTo: imageView.bottomAnchor, constant: 5).isActive = true
+        songInformationStackView.topAnchor.constraint(equalTo: albumCoverCollectionView.bottomAnchor, constant: 5).isActive = true
         songInformationStackView.widthAnchor.constraint(equalTo: widthAnchor, multiplier: 0.90).isActive = true
         
         songInformationStackView.heightAnchor.constraint(equalToConstant: 80).isActive = true
         
         
-        let timeLabelsStackView = UIStackView(arrangedSubviews: [timePassedInfoLabel, totalTimeInfoLabel])
+        let timeLabelsStackView = UIStackView(arrangedSubviews: [secondPassedInfoLabel, totalTimeInfoLabel])
         addSubview(timeLabelsStackView)
         timeLabelsStackView.translatesAutoresizingMaskIntoConstraints = false
         timeLabelsStackView.alignment = .center

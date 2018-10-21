@@ -133,9 +133,7 @@ class MainTabBarController: UITabBarController, ControlTabBarControllerDelegate 
         }
     }
 
-    ////TODO
     func musicPlayerFullScreenAnimation() {
-        
         hideTabBar()
         UIView.animate(withDuration: 0.2) {
             self.topConstraintForAlbumsTableView?.constant = self.distanceToFullScreen
@@ -143,7 +141,7 @@ class MainTabBarController: UITabBarController, ControlTabBarControllerDelegate 
         }
         
     }
-    ///TODO
+    
     func musicPlayerSmallScreenAnimation() {
         showTabBar()
         UIView.animate(withDuration: 0.2) {

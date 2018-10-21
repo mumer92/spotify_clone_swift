@@ -53,7 +53,7 @@ extension MusicPlayerViewController {
                     print("Duration : ", duration)
                     
                     let data = try Data(contentsOf: track)
-                    tracks.append(Track(trackData: data, title: title, albumName: albumName, artist: artist, duration: duration))
+                    tracks.append(Track(trackData: data, title: title, albumName: albumName, artist: artist, duration: duration, albumCover: nil))
                     
                 }
             }

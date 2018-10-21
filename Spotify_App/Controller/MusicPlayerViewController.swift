@@ -5,18 +5,22 @@
 //  Created by Anıl Akkaya on 12.10.2018.
 //  Copyright © 2018 Anıl Akkaya. All rights reserved.
 //
+///todo should go to next song when i scroll collection view
 
 import Foundation
 import UIKit
 import MediaPlayer
 import AVFoundation
 
+///TODO collection view must be repeatable if repeatlist is on
+///TODO handle shuffle
+
 protocol ControlTabBarControllerDelegate: class {
     func musicPlayerFullScreenAnimation()
     func musicPlayerSmallScreenAnimation()
 }
-//ControlTabBarControllerDelegate
-class MusicPlayerViewController: ViewController<PlayerView> {
+
+class MusicPlayerViewController: ViewController<PlayerView>, ControlCollectionViewDelegate {
     
      //MARK: - NSLayoutConstraints
     var topConstraintForAlbumsTableView : NSLayoutConstraint?
@@ -30,31 +34,45 @@ class MusicPlayerViewController: ViewController<PlayerView> {
     var firstTouchPosition : CGPoint?
     var locationChange: CGFloat = 0
     
-    //MARK: Song Variables
-    var mediaPlayer = AVAudioPlayer()
-    private func updateMusicPlayer(track: Track) {
-        
-        let paragraphStyle = NSMutableParagraphStyle()
-        paragraphStyle.alignment = .center
-        
-        let songInfoAttributedString = NSMutableAttributedString(string: "\((currentTrack?.title)!)\n", attributes: [NSAttributedString.Key.font : UIFont.boldSystemFont(ofSize: 17), NSAttributedString.Key.paragraphStyle : paragraphStyle])
-        
-        songInfoAttributedString.append(NSAttributedString(string: (currentTrack?.artist)!, attributes: [NSAttributedString.Key.strokeColor : UIColor.gray, NSAttributedString.Key.font : UIFont.systemFont(ofSize: 13), NSAttributedString.Key.paragraphStyle: paragraphStyle]))
-        customView.songNameLabel.attributedText = songInfoAttributedString
-        
-        
-        let totalSecond : Int = (currentTrack?.duration)!
-        customView.totalTimeInfoLabel.text = secondsToUserTime(second: totalSecond)
-    }
+    //MARK: - Music Player Variables
+    var audioPlayer = AVAudioPlayer()
+    
     var timer = Timer()
     var songs : [Track] = []
+    var currentTime = 0.0 {
+        didSet { //Set's label and slider's value by the time
+            customView.secondPassedInfoLabel.text = secondsToUserTime(second: Int(currentTime))
+            if currentTime > 0.0 {
+                let time = Float(TimeInterval(currentTime) / audioPlayer.duration)
+                customView.timeUpdaterDisplay.value = time
+            } else if currentTime == 0.0 {
+                customView.timeUpdaterDisplay.value = 0
+            }
+        }
+    }
+    var isShuffled : Bool = false {
+        didSet {
+            if isShuffled {
+            } else {
+                
+            }
+        }
+    }
+    var repeatPlayList : Bool = false
     var selectedSongIndex: Int = 0 {
         didSet {
-            if self.selectedSongIndex < 0 {
-                self.selectedSongIndex = songs.count - 1
-            } else if self.selectedSongIndex == songs.count {
-                print("Set ediyok burada")
-                self.selectedSongIndex = 0
+            if selectedSongIndex < 0  { // repeatPlayList = true
+                if repeatPlayList {
+                    selectedSongIndex = songs.count - 1
+                } else {
+                    selectedSongIndex = 0
+                }
+            } else if selectedSongIndex == songs.count { // repeatPlayList = true
+                if repeatPlayList {
+                    selectedSongIndex = 0
+                } else {
+                    selectedSongIndex = songs.count - 1
+                }
             }
         }
     }
@@ -65,23 +83,18 @@ class MusicPlayerViewController: ViewController<PlayerView> {
         didSet {
             resetTimer()
             guard let track = currentTrack else {return}
-            updateMusicPlayer(track : track)
-            
+            updateMusicPlayer(track: track)
             do { //Setting up media player
                 guard let data = currentTrack?.trackData else {return}
-                try mediaPlayer = AVAudioPlayer(data: data)
+                try audioPlayer = AVAudioPlayer(data: data)
+                audioPlayer.prepareToPlay()
             } catch {
-                print("error lan mk")
+                print("error inside currentTrack didSet")
             }
         }
     }
     
     //MARK: - Variables
-    var timePassed: Int = 0 {
-        didSet {
-            customView.timePassedInfoLabel.text = secondsToUserTime(second: timePassed)
-        }
-    }
     var isPlaying : Bool = false {
         didSet {
             if isPlaying {
@@ -89,15 +102,15 @@ class MusicPlayerViewController: ViewController<PlayerView> {
                 let pauseImage = UIImage(named: "pause_small")?.withRenderingMode(.alwaysTemplate)
                 customView.playButton.setImage(pauseImage, for: .normal)
     
-                mediaPlayer.play()
-                getLiveSongTime() // todo change function name
+                audioPlayer.play()
+                keepTrackOfAudio() // todo change function name
                 if isSmall {
-                  customView.playListButton.setImage(pauseImage, for: .normal)
+                    customView.playListButton.setImage(pauseImage, for: .normal)
                 }
             } else {
                 let playImage = UIImage(named: "play_small")?.withRenderingMode(.alwaysTemplate)
                 customView.playButton.setImage(playImage, for: .normal)
-                mediaPlayer.pause()
+                audioPlayer.pause()
                 pauseTimer()
                 if isSmall {
                   customView.playListButton.setImage(playImage, for: .normal)
@@ -110,9 +123,15 @@ class MusicPlayerViewController: ViewController<PlayerView> {
             if isSmall {
                 customView.isSmall = self.isSmall
                 controlTabBarControllerDelegate?.musicPlayerSmallScreenAnimation()
+                
+                customView.playListButton.removeTarget(self, action: #selector(showQueue(_:)), for: .touchUpInside)
+                customView.playListButton.addTarget(self, action: #selector(playPauseSong), for: .touchUpInside)
             } else {
                 customView.isSmall = self.isSmall
                 controlTabBarControllerDelegate?.musicPlayerFullScreenAnimation()
+                
+                customView.playListButton.removeTarget(self, action: #selector(playPauseSong), for: .touchUpInside)
+                customView.playListButton.addTarget(self, action: #selector(showQueue(_:)), for: .touchUpInside)
             }
         }
     }
@@ -124,69 +143,85 @@ class MusicPlayerViewController: ViewController<PlayerView> {
         
         isSmall = true
         
-        songs = getSongs() //pulling all the songs with extension
+
+        let cv = customView.albumCoverCollectionView
+        cv.controlCollectionViewDelegate = self
         
+        //Setting Songs And Media Player
+        songs = getSongs() //pulling all the songs with extension
         selectedSongIndex = 0
         currentTrack = songs[selectedSongIndex]
         
-        //Setting up Gesture Recognizers
+        //Setting Gesture Recognizers
         customView.upDownArrowButton.addTarget(self, action: #selector(upDownArrowButtonAction), for: .touchUpInside)
-        
-        customView.playButton.addTarget(self, action: #selector(playPauseSong(_:)), for: .touchUpInside)
-        customView.previousSongButton.addTarget(self, action: #selector(previousSong(_:)), for: .touchUpInside)
-        customView.nextSongButton.addTarget(self, action: #selector(nextSong(_:)), for: .touchUpInside)
+        customView.playButton.addTarget(self, action: #selector(playPauseSong), for: .touchUpInside)
+        customView.previousSongButton.addTarget(self, action: #selector(previousSong), for: .touchUpInside)
+        customView.nextSongButton.addTarget(self, action: #selector(nextSong), for: .touchUpInside)
         customView.shuffleButton.addTarget(self, action: #selector(shuffle(_:)), for: .touchUpInside)
         customView.repeatButton.addTarget(self, action: #selector(repeatList(_:)), for: .touchUpInside)
+        customView.timeUpdaterDisplay.addTarget(self, action: #selector(sliderValueChanged(_:)), for: .valueChanged)
     }
     
-    func structToData(track: Track) -> Data{
+    func structToData(track: Track) -> Data {
         var trck = track
         return Data(bytes: &trck, count: MemoryLayout<Track>.stride)
     }
-    //MARK: - Delegate Status Bar
-    var isStatusBarHidden: Bool = false {
-        didSet {
-            print("isStatisBarHidden : " , isStatusBarHidden)
-            UIView.animate(withDuration: 1.1) {
-                self.setNeedsStatusBarAppearanceUpdate()
-            }
-        }
+    @objc func upDownArrowButtonAction() {isSmall = !isSmall}
+    
+    @objc func showQueue(_ button: UIButton) {
+        print("showQueue worked")
     }
     
-    override var preferredStatusBarUpdateAnimation: UIStatusBarAnimation {
-        return .slide
-    }
-    override var prefersStatusBarHidden: Bool {
-        return isStatusBarHidden
-    }
+    //MARK: - Music Player Controller
+    private func updateMusicPlayer(track: Track) {
+    
+        //Setting song & artist name
+        let paragraphStyle = NSMutableParagraphStyle()
+        paragraphStyle.alignment = .center
+        
+        let songInfoAttributedString = NSMutableAttributedString(string: "\((currentTrack?.title)!)\n", attributes: [NSAttributedString.Key.font : UIFont.boldSystemFont(ofSize: 17), NSAttributedString.Key.paragraphStyle : paragraphStyle])
+        
 
-    @objc func upDownArrowButtonAction() {
-        isSmall = !isSmall
+        songInfoAttributedString.append(NSAttributedString(string: (currentTrack?.artist)!, attributes: [NSAttributedString.Key.strokeColor : UIColor.gray, NSAttributedString.Key.font : UIFont.systemFont(ofSize: 13), NSAttributedString.Key.paragraphStyle: paragraphStyle]))
+        customView.songNameLabel.attributedText = songInfoAttributedString
+        
+        //Setting second
+        let totalSecond : Int = (currentTrack?.duration)!
+        customView.totalTimeInfoLabel.text = secondsToUserTime(second: totalSecond)
+
     }
-    
-    //Music Player Controller
-    @objc func playPauseSong(_ button: UIButton) {
+    @objc func playPauseSong() {
         isPlaying = !isPlaying
-        
     }
-    @objc func previousSong(_ button: UIButton) {
-        //sarkiyi ata
-        selectedSongIndex -= 1
-        print("Seleced Index : " , selectedSongIndex)
-        currentTrack = songs[selectedSongIndex]
+    @objc func previousSong() {
+        if currentTime > 4 { // Go to beggining of the current song if song is playing more than 4 seconds
+            currentTrack = songs[selectedSongIndex]
+        } else {
+            selectedSongIndex -= 1
+            currentTrack = songs[selectedSongIndex]
+        }
+        
         isPlaying = true
-    }
-    @objc func nextSong(_ button: UIButton) {
         
+        let indexPath = IndexPath(item: selectedSongIndex, section: 0)
+        customView.albumCoverCollectionView.scrollToItem(at: indexPath, at: .centeredHorizontally, animated: true)
+        customView.albumCoverCollectionView.currentPage -= 1
+        customView.albumCoverCollectionView.animateCellForPreviousSong()
+    }
+    @objc func nextSong() {
         selectedSongIndex += 1
-        print("Seleced Index : " , selectedSongIndex)
         currentTrack = songs[selectedSongIndex]
         isPlaying = true
+        
+        let indexPath = IndexPath(item: selectedSongIndex, section: 0)
+        customView.albumCoverCollectionView.scrollToItem(at: indexPath, at: .centeredHorizontally, animated: true)
+        customView.albumCoverCollectionView.currentPage += 1
+        customView.albumCoverCollectionView.animateCellForNextSong()
     }
     
     @objc func shuffle(_ button: UIButton) {
         button.isSelected = !button.isSelected
-        
+        isShuffled = !isShuffled
         if button.isSelected {
             button.tintColor = .green
         } else {
@@ -196,34 +231,67 @@ class MusicPlayerViewController: ViewController<PlayerView> {
     
     @objc func repeatList(_ button: UIButton) {
         button.isSelected = !button.isSelected
-        
+        repeatPlayList = !repeatPlayList
         if button.isSelected {
             button.tintColor = .green
         } else {
             button.tintColor = .gray
         }
     }
-    private func getLiveSongTime() {
+    private func songFinished() -> Bool {
+        if Int(currentTime) > Int(audioPlayer.duration) {
+            return true
+        }
+        return false
+    }
+    private func keepTrackOfAudio() {
         timer = Timer.scheduledTimer(timeInterval: 1, target: self, selector: #selector(updateTimer), userInfo: nil, repeats: true)
     }
-    var counter = 0.0 {
-        didSet {
-            customView.timePassedInfoLabel.text = secondsToUserTime(second: Int(counter))
-        }
-    }
+
     @objc private func updateTimer() {
-        counter = counter + 1
+        currentTime += 1
+        if songFinished() { // each second checks if song finished or not. Goes to next song if it finished.
+            nextSong()
+        }
     }
     private func pauseTimer() {
         timer.invalidate()
     }
     private func resetTimer() {
         timer.invalidate()
-        counter = 0
+        currentTime = 0
     }
+    @objc func sliderValueChanged(_ slider: UISlider) {
+        let newSecond = audioPlayer.duration * Double(slider.value)
+        currentTime = newSecond
+        audioPlayer.currentTime = TimeInterval(newSecond)
+    }
+    
+    //MARK: ControlCollectionViewDelegate Function
+    func collectionViewScrolled(goToNextSong: Bool) {
+        if goToNextSong {
+            selectedSongIndex += 1
+            currentTrack = songs[selectedSongIndex]
+            isPlaying = true
+        } else {
+            if currentTime > 4 { // Go to beggining of the current song if song is playing more than 4 seconds
+                currentTrack = songs[selectedSongIndex]
+            } else {
+                selectedSongIndex -= 1
+                currentTrack = songs[selectedSongIndex]
+            }
+            isPlaying = true
+            //todo check it again if it's necessary or not
+            customView.albumCoverCollectionView.isScrollEnabled = false
+//            DispatchQueue.main.asyncAfter(deadline: .now() + 0.25) { // To avoid user to change songs in a row
+            self.customView.albumCoverCollectionView.isScrollEnabled = true
+            }
+        }
 }
 
 
+
+//MARK: Extension
 extension MusicPlayerViewController {
     private func secondsToUserTime(second: Int) -> String {
         let minutes = Int(second / 60)

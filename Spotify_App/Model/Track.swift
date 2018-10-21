@@ -15,4 +15,5 @@ struct Track {
     var albumName : String
     var artist : String?
     var duration : Int
+    var albumCover : UIImage?
 }
