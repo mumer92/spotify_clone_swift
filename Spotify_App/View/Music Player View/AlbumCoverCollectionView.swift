@@ -17,23 +17,21 @@ class AlbumCoverCollectionView: UICollectionView {
     
     //MARK: Variables
     let cellId = "AlbumCoverCell"
-    var albumCovers: [UIImage] = [UIImage(named: "the way of all flesh")!, UIImage(named: "the way of all flesh")!, UIImage(named: "the way of all flesh")!, UIImage(named: "the way of all flesh")!, UIImage(named: "the way of all flesh")!, UIImage(named: "the way of all flesh")!, UIImage(named: "the way of all flesh")!, UIImage(named: "the way of all flesh")!, UIImage(named: "the way of all flesh")!, UIImage(named: "the way of all flesh")!, UIImage(named: "the way of all flesh")!, UIImage(named: "the way of all flesh")!,]
+    var albumCovers: [UIImage] = [UIImage(named: "the_way_of_all_flesh")!, UIImage(named: "the_way_of_all_flesh")!, UIImage(named: "lenfant_sauvage")!, UIImage(named: "the_way_of_all_flesh")!, UIImage(named: "the_way_of_all_flesh")!, UIImage(named: "the_way_of_all_flesh")!, UIImage(named: "flying_whales")!, UIImage(named: "the_way_of_all_flesh")!, UIImage(named: "the_way_of_all_flesh")!, UIImage(named: "the_way_of_all_flesh")!, UIImage(named: "lenfant_sauvage")!, UIImage(named: "the_way_of_all_flesh")!]
     
     let itemHeight = UIScreen.main.bounds.height / 3
     let itemWidth = UIScreen.main.bounds.width / 1.3
     var controlCollectionViewDelegate: ControlCollectionViewDelegate?
     let pageController = UIPageControl()
     
-    //Works like an index.
-    
     var currentPage: Int = 0 { //Changes
         didSet {
             pageController.currentPage = currentPage
             
-            //todo fix this part
-            if currentPage == albumCovers.count {
+            if currentPage == albumCovers.count { // to prevent bug
                 currentPage = albumCovers.count - 1
-                print("limitteyiz newValue is :  ", currentPage)
+            } else if currentPage < 0 { // to prevent bug
+                currentPage = 0
             }
         }
     }
@@ -50,19 +48,18 @@ class AlbumCoverCollectionView: UICollectionView {
     }
     
     func animateCellForNextSong() {
-        print("currentPage : " , currentPage)
         let indexPath = IndexPath(row: currentPage, section: 0)
         let cell : AlbumCoverCell = cellForItem(at: indexPath) as! AlbumCoverCell
         let prevIndexPath = IndexPath(row: currentPage-1, section: 0)
         var prevCell = AlbumCoverCell()
 
         if currentPage == 0 { //to prevent viewcontroller next button's bug
-            prevCell = self.cellForItem(at: getIndexPath(index: currentPage)) as! AlbumCoverCell
+            prevCell = cellForItem(at: getIndexPath(index: currentPage)) as! AlbumCoverCell
         } else if currentPage < albumCovers.count - 1 {
-            prevCell = self.cellForItem(at: prevIndexPath) as! AlbumCoverCell
+            prevCell = cellForItem(at: prevIndexPath) as! AlbumCoverCell
             makeCellUnselected(previousCell: prevCell)
         } else { //last song..
-            prevCell = self.cellForItem(at: getIndexPath(index: currentPage)) as! AlbumCoverCell
+            prevCell = cellForItem(at: getIndexPath(index: currentPage)) as! AlbumCoverCell
             makeCellUnselected(previousCell: prevCell)
         }
         
@@ -77,7 +74,31 @@ class AlbumCoverCollectionView: UICollectionView {
     }
     
     func animateCellForPreviousSong() {
-        print("animate to previous song please boi")
+        
+        let indexPath = IndexPath(row: currentPage, section: 0)
+        let cell : AlbumCoverCell = cellForItem(at: indexPath) as! AlbumCoverCell
+        
+        let nextIndexPath = IndexPath(row: currentPage+1, section: 0)
+        var nextCell = AlbumCoverCell()
+        
+        if currentPage == albumCovers.count {
+            // don't change anything. We are in the last song
+        } else if currentPage == 0 {
+            nextCell = cellForItem(at: getIndexPath(index: 0)) as! AlbumCoverCell
+            makeCellUnselected(previousCell: nextCell)
+            //dont change anything
+        } else {
+            nextCell = cellForItem(at: nextIndexPath) as! AlbumCoverCell
+            makeCellUnselected(previousCell: nextCell)
+        }
+        
+        ///To animate main cell
+        cell.transform = CGAffineTransform.identity
+        UIView.animate(withDuration: 0.6, delay: 0, options: [.curveEaseIn], animations: {
+            cell.alpha = 1
+            cell.transform = CGAffineTransform.init(scaleX: 1.05, y: 1.05)
+            self.layoutIfNeeded()
+        }, completion: nil)
     }
     
     //MARK: Initiliazer
@@ -120,8 +141,8 @@ extension AlbumCoverCollectionView: UICollectionViewDelegate, UICollectionViewDa
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         let cell = collectionView.dequeueReusableCell(withReuseIdentifier: cellId, for: indexPath) as! AlbumCoverCell
         cell.imageView.image = albumCovers[indexPath.row]
-        cell.alpha = 0.6
-        cell.transform = CGAffineTransform.init(scaleX: 0.9, y: 0.9)
+        cell.alpha = 0.7
+        cell.transform = CGAffineTransform.init(scaleX: 0.85, y: 0.85)
         return cell
     }
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
@@ -138,7 +159,7 @@ extension AlbumCoverCollectionView: UICollectionViewDelegate, UICollectionViewDa
     }
     
     func scrollViewWillEndDragging(_ scrollView: UIScrollView, withVelocity velocity: CGPoint, targetContentOffset: UnsafeMutablePointer<CGPoint>) { // Centerizes the cell
-        let oldValue = currentPage
+        
         let pageWidth = Float(itemWidth + 10)
         let targetXContentOffset = Float(targetContentOffset.pointee.x)
         let contentWidth = Float(contentSize.width  )
@@ -161,20 +182,19 @@ extension AlbumCoverCollectionView: UICollectionViewDelegate, UICollectionViewDa
             newPage = Float(albumCovers.count - 1)
         }
         
-        
-        if currentPage != Int(newPage) { //moved to (next or previous) cell
+        if currentPage > Int(newPage) { //moved to previous cell
+            controlCollectionViewDelegate?.collectionViewScrolled(goToNextSong: false)
+            currentPage = Int(newPage) //bug
+            animateCellForPreviousSong()
+        } else if currentPage < Int(newPage) { //moved to next cell
             controlCollectionViewDelegate?.collectionViewScrolled(goToNextSong: true)
             currentPage = Int(newPage) //bug
+            animateCellForNextSong()
         }
         
         let point = CGPoint (x: CGFloat(newPage * pageWidth), y: targetContentOffset.pointee.y)
         targetContentOffset.pointee = point
-        
-        if scrollView.contentOffset.x > 0 { // next song
-            animateCellForNextSong()
-        } else { // prev song
-            animateCellForPreviousSong()
-        }
+
     }
     
 }

@@ -15,12 +15,12 @@ class AlbumCoverCell: UICollectionViewCell {
         let imageView = UIImageView()
         imageView.translatesAutoresizingMaskIntoConstraints = false
         imageView.backgroundColor = .red
-        imageView.contentMode = .scaleAspectFill
+        imageView.contentMode = .scaleToFill
         return imageView
     }()
     override init(frame: CGRect) {
         super.init(frame: frame)
-        backgroundColor = .red
+        backgroundColor = .clear
         setView()
         setLayout()
     }

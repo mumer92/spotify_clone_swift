@@ -5,15 +5,12 @@
 //  Created by Anıl Akkaya on 12.10.2018.
 //  Copyright © 2018 Anıl Akkaya. All rights reserved.
 //
-///todo should go to next song when i scroll collection view
 
 import Foundation
 import UIKit
 import MediaPlayer
 import AVFoundation
 
-///TODO collection view must be repeatable if repeatlist is on
-///TODO handle shuffle
 
 protocol ControlTabBarControllerDelegate: class {
     func musicPlayerFullScreenAnimation()
@@ -38,7 +35,12 @@ class MusicPlayerViewController: ViewController<PlayerView>, ControlCollectionVi
     var audioPlayer = AVAudioPlayer()
     
     var timer = Timer()
-    var songs : [Track] = []
+    var songs : [Track] = [] {
+        didSet {
+            print("songs : " , songs)
+        }
+    }
+    var songsBackup : [Track] = []
     var currentTime = 0.0 {
         didSet { //Set's label and slider's value by the time
             customView.secondPassedInfoLabel.text = secondsToUserTime(second: Int(currentTime))
@@ -53,9 +55,14 @@ class MusicPlayerViewController: ViewController<PlayerView>, ControlCollectionVi
     var isShuffled : Bool = false {
         didSet {
             if isShuffled {
+                songs = songs.shuffled()
+                customView.albumCoverCollectionView.reloadData()
             } else {
-                
+                songs = songsBackup
+                customView.albumCoverCollectionView.reloadData()
             }
+            currentTrack = songs.first
+            updateMusicPlayer(track: currentTrack!)
         }
     }
     var repeatPlayList : Bool = false
@@ -136,19 +143,22 @@ class MusicPlayerViewController: ViewController<PlayerView>, ControlCollectionVi
         }
     }
     
-    
+    let myArr = ["sa", "canim", "ben", "senin", "amcanim"]
     //MARK: - View Appareance
     override func viewDidLoad() {
         super.viewDidLoad()
         
         isSmall = true
-        
 
         let cv = customView.albumCoverCollectionView
         cv.controlCollectionViewDelegate = self
         
         //Setting Songs And Media Player
         songs = getSongs() //pulling all the songs with extension
+        DispatchQueue.global(qos: .background).async {
+            print("running in the background babe")
+            self.songsBackup = self.getSongs()
+        }
         selectedSongIndex = 0
         currentTrack = songs[selectedSongIndex]
         
@@ -189,6 +199,10 @@ class MusicPlayerViewController: ViewController<PlayerView>, ControlCollectionVi
         let totalSecond : Int = (currentTrack?.duration)!
         customView.totalTimeInfoLabel.text = secondsToUserTime(second: totalSecond)
 
+        
+        //Setting Background Image
+        //can set it again after i can use TRACK's images
+        customView.backgroundImage = customView.albumCoverCollectionView.albumCovers[selectedSongIndex]
     }
     @objc func playPauseSong() {
         isPlaying = !isPlaying
@@ -274,12 +288,8 @@ class MusicPlayerViewController: ViewController<PlayerView>, ControlCollectionVi
             currentTrack = songs[selectedSongIndex]
             isPlaying = true
         } else {
-            if currentTime > 4 { // Go to beggining of the current song if song is playing more than 4 seconds
-                currentTrack = songs[selectedSongIndex]
-            } else {
-                selectedSongIndex -= 1
-                currentTrack = songs[selectedSongIndex]
-            }
+            selectedSongIndex -= 1
+            currentTrack = songs[selectedSongIndex]
             isPlaying = true
             //todo check it again if it's necessary or not
             customView.albumCoverCollectionView.isScrollEnabled = false

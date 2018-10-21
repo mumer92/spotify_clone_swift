@@ -53,7 +53,13 @@ class PlayerView: View {
         }
     }
     //MARK: - Items
-    
+    //MARK: - Background Image Items
+    let backgroundImageView = UIImageView(frame: UIScreen.main.bounds)
+    var backgroundImage = UIImage(named: "the_way_of_all_flesh") {
+        didSet {
+            backgroundImageView.image = backgroundImage
+        }
+    }
     //MARK: - Top
     var upDownArrowButton : UIButton = {
         let image = UIImage(named: "down_arrow")?.withRenderingMode(.alwaysTemplate)
@@ -189,15 +195,6 @@ class PlayerView: View {
         return button
     }()
     
-//    var imageView : UIImageView = { // Must be collection view ///TODO
-//        let imageView = UIImageView()
-//        imageView.translatesAutoresizingMaskIntoConstraints = false
-//
-//        let image = UIImage(named: "masashi")?.withRenderingMode(.alwaysTemplate)
-//        imageView.image = image
-//
-//        return imageView
-//    }()
     var albumCoverCollectionView : AlbumCoverCollectionView = { // Must be collection view ///TODO
         let cv = AlbumCoverCollectionView()
         cv.translatesAutoresizingMaskIntoConstraints = false
@@ -215,6 +212,9 @@ class PlayerView: View {
         layoutViews()
         setupStackViews()
         translatesAutoresizingMaskIntoConstraints = false
+        
+        backgroundImageView.addBlurEffect()
+        insertSubview(backgroundImageView, at: 0)
     }
     
     required init?(coder aDecoder: NSCoder) {
@@ -224,13 +224,12 @@ class PlayerView: View {
     override func tintColorDidChange() {
         print("color changed amina kodumun yerinde")
     }
-      //MARK: - Layout
-   override func setViews() {
+    
+    //MARK: - Layout
+    override func setViews() {
         addSubview(albumCoverCollectionView)
-//        addSubview(imageView)
         addSubview(timeUpdaterDisplay)
         addSubview(avaibleDevicesButton)
-    
     }
     override func layoutViews() {
         
@@ -338,5 +337,15 @@ class PlayerView: View {
         playerControllerStackView.widthAnchor.constraint(equalTo: widthAnchor, multiplier: 0.8).isActive = true
         playerControllerStackView.heightAnchor.constraint(equalToConstant: 100).isActive = true
         
+    }
+}
+extension UIImageView {
+    func addBlurEffect() {
+        let blurEffect = UIBlurEffect(style: .dark)
+        let blurEffectView = UIVisualEffectView(effect: blurEffect)
+        blurEffectView.frame = self.bounds
+        
+        blurEffectView.autoresizingMask = [.flexibleWidth, .flexibleHeight]
+        self.addSubview(blurEffectView)
     }
 }
