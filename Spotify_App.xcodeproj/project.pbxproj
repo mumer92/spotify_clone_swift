@@ -27,6 +27,7 @@
 		8AAB87742177FDE9008AB20F /* UIImageExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8AAB87732177FDE9008AB20F /* UIImageExtension.swift */; };
 		8AB984B4217B5F23007D994F /* LoadingAnimationView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8AB984B3217B5F23007D994F /* LoadingAnimationView.swift */; };
 		8AC1926B2170D9F000C816C6 /* SetupHomeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8AC1926A2170D9F000C816C6 /* SetupHomeView.swift */; };
+		8AD32968217DD0EA008385F5 /* TrackTitleScrollView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8AD32967217DD0EA008385F5 /* TrackTitleScrollView.swift */; };
 		8AF4A60721727B140046C75B /* PlayerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8AF4A60621727B140046C75B /* PlayerView.swift */; };
 		8AF6A6312170091700DC776C /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8AF6A6302170091700DC776C /* AppDelegate.swift */; };
 		8AF6A6332170091700DC776C /* MainTabBarController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8AF6A6322170091700DC776C /* MainTabBarController.swift */; };
@@ -69,6 +70,7 @@
 		8AAB87732177FDE9008AB20F /* UIImageExtension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UIImageExtension.swift; sourceTree = "<group>"; };
 		8AB984B3217B5F23007D994F /* LoadingAnimationView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoadingAnimationView.swift; sourceTree = "<group>"; };
 		8AC1926A2170D9F000C816C6 /* SetupHomeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SetupHomeView.swift; sourceTree = "<group>"; };
+		8AD32967217DD0EA008385F5 /* TrackTitleScrollView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TrackTitleScrollView.swift; sourceTree = "<group>"; };
 		8AF4A60621727B140046C75B /* PlayerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlayerView.swift; sourceTree = "<group>"; };
 		8AF6A62D2170091700DC776C /* Spotify_App.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Spotify_App.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		8AF6A6302170091700DC776C /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
@@ -108,6 +110,7 @@
 			children = (
 				8AF4A60621727B140046C75B /* PlayerView.swift */,
 				8A4B90802178A5B4009B4EA7 /* AlbumCoverCollectionView.swift */,
+				8AD32967217DD0EA008385F5 /* TrackTitleScrollView.swift */,
 			);
 			path = "Music Player View";
 			sourceTree = "<group>";
@@ -320,6 +323,7 @@
 				8AF6A64A21700A7100DC776C /* View.swift in Sources */,
 				8AC1926B2170D9F000C816C6 /* SetupHomeView.swift in Sources */,
 				8AF6A64C21700B4200DC776C /* HomeView.swift in Sources */,
+				8AD32968217DD0EA008385F5 /* TrackTitleScrollView.swift in Sources */,
 				8A4B90812178A5B4009B4EA7 /* AlbumCoverCollectionView.swift in Sources */,
 				8AF6A65821700BD700DC776C /* SearchViewController.swift in Sources */,
 				8AAB87742177FDE9008AB20F /* UIImageExtension.swift in Sources */,

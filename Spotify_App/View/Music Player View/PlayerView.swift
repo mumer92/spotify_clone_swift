@@ -49,7 +49,7 @@ class PlayerView: View {
     }
     var idealGapBetweenItems : CGFloat  {
         get {
-            return UIScreen.main.bounds.height / 35
+            return UIScreen.main.bounds.height / 45
         }
     }
     //MARK: - Items
@@ -85,14 +85,14 @@ class PlayerView: View {
     }()
     
     //MARK: - Song Information and options
-    var songNameLabel : UILabel = {
-        let label = UILabel()
-        label.numberOfLines = 2
-        label.text = "Sivasin Yollarina"
-        label.textColor = .white
-        label.translatesAutoresizingMaskIntoConstraints = false
-        return label
+    //Gotta turn this into Scroll view cause text has to scroll when song name is too long/
+    var songTitleScrollView: TrackTitleScrollView = {
+        let view = TrackTitleScrollView(frame: CGRect(origin: .zero, size: CGSize(width: 50, height: 80)))
+        view.backgroundColor = .clear
+        return view
     }()
+ 
+
     var addToLibraryButton : UIButton = {
         let image = UIImage(named: "plus_symbol")?.withRenderingMode(.alwaysTemplate)
         let button = UIButton(type: .custom, backgroundColor: nil, image: image, imageTintColor: .gray)
@@ -105,6 +105,7 @@ class PlayerView: View {
         
         return button
     }()
+    
     
     //MARK: - Song's Time Information
     
@@ -205,6 +206,7 @@ class PlayerView: View {
     
     override init(frame: CGRect) {
         super.init(frame: frame)
+        songTitleScrollView.translatesAutoresizingMaskIntoConstraints = false
         
         backgroundColor = grayColor
         
@@ -233,20 +235,17 @@ class PlayerView: View {
     }
     override func layoutViews() {
         
-
         upDownArrowButton.widthAnchor.constraint(lessThanOrEqualToConstant: 32).isActive = true
         upDownArrowButton.heightAnchor.constraint(lessThanOrEqualToConstant: 32).isActive = true
         
         playListButton.widthAnchor.constraint(lessThanOrEqualToConstant: 32).isActive = true
         playListButton.heightAnchor.constraint(lessThanOrEqualToConstant: 32).isActive = true
         
-        
         //setting up top Anchor in setupStackView function
         albumCoverCollectionView.centerXAnchor.constraint(equalTo: centerXAnchor).isActive = true
         albumCoverCollectionView.widthAnchor.constraint(equalTo: widthAnchor, multiplier: 1).isActive = true
-        let idealHeightForImageView = UIScreen.main.bounds.height / 3
+        let idealHeightForImageView = UIScreen.main.bounds.height / 2.9
         albumCoverCollectionView.heightAnchor.constraint(equalToConstant: idealHeightForImageView).isActive = true //gotta change it. todo
-        
         
         //Player
         playButton.widthAnchor.constraint(lessThanOrEqualToConstant: 75).isActive = true
@@ -288,22 +287,26 @@ class PlayerView: View {
         albumCoverCollectionView.topAnchor.constraint(equalTo: topStackView.bottomAnchor, constant: idealGapBetweenItems).isActive = true
         
         
-        let songInformationStackView = UIStackView(arrangedSubviews: [addToLibraryButton,songNameLabel,optionsButton])
+        let songInformationStackView = UIStackView(arrangedSubviews: [addToLibraryButton,songTitleScrollView, optionsButton])
         songInformationStackView.distribution = .equalSpacing
         songInformationStackView.spacing = 0.5
         songInformationStackView.axis = .horizontal
         songInformationStackView.translatesAutoresizingMaskIntoConstraints = false
         songInformationStackView.alignment = .center
-        
+
         addSubview(songInformationStackView)
+    
+        songInformationStackView.centerXAnchor.constraint(equalTo: centerXAnchor).isActive = true
+        songInformationStackView.topAnchor.constraint(equalTo: albumCoverCollectionView.bottomAnchor, constant: idealGapBetweenItems).isActive = true
+        songInformationStackView.widthAnchor.constraint(equalTo: widthAnchor, multiplier: 0.90).isActive = true
+        songInformationStackView.heightAnchor.constraint(equalToConstant: 40).isActive = true
         
         songInformationStackView.subviews[1].widthAnchor.constraint(equalTo: widthAnchor, multiplier: 0.65).isActive = true
-        
-        songInformationStackView.centerXAnchor.constraint(equalTo: centerXAnchor).isActive = true
-        songInformationStackView.topAnchor.constraint(equalTo: albumCoverCollectionView.bottomAnchor, constant: 5).isActive = true
-        songInformationStackView.widthAnchor.constraint(equalTo: widthAnchor, multiplier: 0.90).isActive = true
-        
-        songInformationStackView.heightAnchor.constraint(equalToConstant: 80).isActive = true
+
+        songInformationStackView.subviews[1].heightAnchor.constraint(equalToConstant: 40).isActive = true
+
+        songInformationStackView.subviews[1].centerXAnchor.constraint(equalTo: centerXAnchor).isActive = true
+        songInformationStackView.subviews[1].topAnchor.constraint(equalTo: songInformationStackView.subviews[0].topAnchor).isActive = true
         
         
         let timeLabelsStackView = UIStackView(arrangedSubviews: [secondPassedInfoLabel, totalTimeInfoLabel])
@@ -312,17 +315,15 @@ class PlayerView: View {
         timeLabelsStackView.alignment = .center
         timeLabelsStackView.distribution = .equalSpacing
         timeLabelsStackView.axis = .horizontal
-        
         timeLabelsStackView.centerXAnchor.constraint(equalTo: centerXAnchor).isActive = true
         timeLabelsStackView.topAnchor.constraint(equalTo: songInformationStackView.bottomAnchor, constant: idealGapBetweenItems).isActive = true
         timeLabelsStackView.widthAnchor.constraint(equalTo: widthAnchor, multiplier: 0.9).isActive = true
-        timeLabelsStackView.heightAnchor.constraint(equalToConstant: 25).isActive = true
+        timeLabelsStackView.heightAnchor.constraint(equalToConstant: 23).isActive = true
         
         timeUpdaterDisplay.widthAnchor.constraint(equalTo: widthAnchor, multiplier: 0.9).isActive = true
         timeUpdaterDisplay.heightAnchor.constraint(equalToConstant: 15).isActive = true
         timeUpdaterDisplay.topAnchor.constraint(equalTo: timeLabelsStackView.bottomAnchor, constant: 5).isActive = true
         timeUpdaterDisplay.leftAnchor.constraint(equalTo: timeLabelsStackView.leftAnchor).isActive = true
-        
         
         
         let playerControllerStackView = UIStackView(arrangedSubviews: [shuffleButton, previousSongButton, playButton, nextSongButton, repeatButton])

@@ -189,17 +189,17 @@ class MusicPlayerViewController: ViewController<PlayerView>, ControlCollectionVi
         let paragraphStyle = NSMutableParagraphStyle()
         paragraphStyle.alignment = .center
         
-        let songInfoAttributedString = NSMutableAttributedString(string: "\((currentTrack?.title)!)\n", attributes: [NSAttributedString.Key.font : UIFont.boldSystemFont(ofSize: 17), NSAttributedString.Key.paragraphStyle : paragraphStyle])
+        let songInfoAttributedString = NSMutableAttributedString(string: "\((currentTrack?.title)!)\n", attributes: [NSAttributedString.Key.font : UIFont.boldSystemFont(ofSize: 18), NSAttributedString.Key.paragraphStyle : paragraphStyle])
         
 
-        songInfoAttributedString.append(NSAttributedString(string: (currentTrack?.artist)!, attributes: [NSAttributedString.Key.strokeColor : UIColor.gray, NSAttributedString.Key.font : UIFont.systemFont(ofSize: 13), NSAttributedString.Key.paragraphStyle: paragraphStyle]))
-        customView.songNameLabel.attributedText = songInfoAttributedString
+        songInfoAttributedString.append(NSAttributedString(string: (currentTrack?.artist)!, attributes: [NSAttributedString.Key.strokeColor : UIColor.gray, NSAttributedString.Key.font : UIFont.systemFont(ofSize: 12), NSAttributedString.Key.paragraphStyle: paragraphStyle]))
+//        customView.songTitleScrollView.songNameLabel.attributedText = songInfoAttributedString
+        customView.songTitleScrollView.attributedString = songInfoAttributedString
         
         //Setting second
         let totalSecond : Int = (currentTrack?.duration)!
         customView.totalTimeInfoLabel.text = secondsToUserTime(second: totalSecond)
 
-        
         //Setting Background Image
         //can set it again after i can use TRACK's images
         customView.backgroundImage = customView.albumCoverCollectionView.albumCovers[selectedSongIndex]

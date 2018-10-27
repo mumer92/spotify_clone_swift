@@ -29,10 +29,10 @@ class AlbumCoverCell: UICollectionViewCell {
         addSubview(imageView)
     }
     private func setLayout() {
-        imageView.topAnchor.constraint(equalTo: topAnchor, constant: 8).isActive = true
-        imageView.bottomAnchor.constraint(equalTo: bottomAnchor, constant: -8).isActive = true
+        imageView.topAnchor.constraint(equalTo: topAnchor, constant: 0).isActive = true
+        imageView.bottomAnchor.constraint(equalTo: bottomAnchor, constant: 2).isActive = true
         imageView.leftAnchor.constraint(equalTo: leftAnchor, constant: 0).isActive = true
-        imageView.rightAnchor.constraint(equalTo: rightAnchor, constant: 0).isActive = true
+        imageView.rightAnchor.constraint(equalTo: rightAnchor, constant: -2).isActive = true
     }
     required init?(coder aDecoder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
