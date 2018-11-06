@@ -33,7 +33,10 @@ class PlayerView: View {
         
         upDownArrowButton.tintColor = .white
         bottomConstraintForAvaibleDevicesButton?.constant = -2
+        addTimerUpdateToScreen()
         layoutIfNeeded()
+//        addSubview(timeUpdaterDisplayForSmallView)
+        
     }
     private func updateDisplayForFullScreenView() {
         
@@ -46,6 +49,14 @@ class PlayerView: View {
         upDownArrowButton.tintColor = .white
         bottomConstraintForAvaibleDevicesButton?.constant = -idealGapBetweenItems
         layoutIfNeeded()
+        timeUpdaterDisplayForSmallView.removeFromSuperview()
+    }
+    private func addTimerUpdateToScreen() {
+           addSubview(timeUpdaterDisplayForSmallView)
+        timeUpdaterDisplayForSmallView.topAnchor.constraint(equalTo: topAnchor, constant: -1).isActive = true
+        timeUpdaterDisplayForSmallView.widthAnchor.constraint(equalTo: widthAnchor, multiplier: 1).isActive = true
+        timeUpdaterDisplayForSmallView.heightAnchor.constraint(equalToConstant: 5).isActive = true
+        timeUpdaterDisplayForSmallView.leftAnchor.constraint(equalTo: leftAnchor).isActive = true
     }
     var idealGapBetweenItems : CGFloat  {
         get {
@@ -61,6 +72,8 @@ class PlayerView: View {
         }
     }
     //MARK: - Top
+    var timeupdaterForSmallView = CAShapeLayer()
+    
     var upDownArrowButton : UIButton = {
         let image = UIImage(named: "down_arrow")?.withRenderingMode(.alwaysTemplate)
         let button = UIButton(type: .custom, backgroundColor: nil, image: image, imageTintColor: .white)
@@ -118,23 +131,44 @@ class PlayerView: View {
         return label
     }()
     
+    var timeUpdaterDisplayForSmallView : UISlider = {
+        let timeUpdaterDisplay = UISlider()
+        
+        let image = UIImage(named: "circle")?.withRenderingMode(.alwaysTemplate).maskWithColor(color: UIColor.white)
+        let image2 = UIImage(named: "circle_2")?.withRenderingMode(.alwaysTemplate).maskWithColor(color: UIColor.white)
+        
+        timeUpdaterDisplay.isContinuous = true
+        
+        timeUpdaterDisplay.tintColor = .white
+        timeUpdaterDisplay.maximumTrackTintColor = .gray
+        
+        timeUpdaterDisplay.setThumbImage(UIImage(), for: .normal)
+        timeUpdaterDisplay.setThumbImage(UIImage(), for: .highlighted)
+        timeUpdaterDisplay.isEnabled = false
+        
+        timeUpdaterDisplay.translatesAutoresizingMaskIntoConstraints = false
+        
+        return timeUpdaterDisplay
+    }()
+    
+
     var timeUpdaterDisplay : UISlider = {
-        let timeUpdateDisplay = UISlider()
+        let timeUpdaterDisplay = UISlider()
  
         let image = UIImage(named: "circle")?.withRenderingMode(.alwaysTemplate).maskWithColor(color: UIColor.white)
         let image2 = UIImage(named: "circle_2")?.withRenderingMode(.alwaysTemplate).maskWithColor(color: UIColor.white)
         
-        timeUpdateDisplay.isContinuous = true
+        timeUpdaterDisplay.isContinuous = true
         
-        timeUpdateDisplay.tintColor = .white
-        timeUpdateDisplay.maximumTrackTintColor = .gray
+        timeUpdaterDisplay.tintColor = .white
+        timeUpdaterDisplay.maximumTrackTintColor = .gray
         
-        timeUpdateDisplay.setThumbImage(image, for: .normal)
-        timeUpdateDisplay.setThumbImage(image2, for: .highlighted)
+        timeUpdaterDisplay.setThumbImage(image, for: .normal)
+        timeUpdaterDisplay.setThumbImage(image2, for: .highlighted)
         
-        timeUpdateDisplay.translatesAutoresizingMaskIntoConstraints = false
+        timeUpdaterDisplay.translatesAutoresizingMaskIntoConstraints = false
         
-        return timeUpdateDisplay
+        return timeUpdaterDisplay
     }()
     
     
@@ -206,6 +240,7 @@ class PlayerView: View {
     
     override init(frame: CGRect) {
         super.init(frame: frame)
+        
         songTitleScrollView.translatesAutoresizingMaskIntoConstraints = false
         
         backgroundColor = grayColor
@@ -229,6 +264,7 @@ class PlayerView: View {
     
     //MARK: - Layout
     override func setViews() {
+        addTimerUpdateToScreen()
         addSubview(albumCoverCollectionView)
         addSubview(timeUpdaterDisplay)
         addSubview(avaibleDevicesButton)
@@ -320,11 +356,11 @@ class PlayerView: View {
         timeLabelsStackView.widthAnchor.constraint(equalTo: widthAnchor, multiplier: 0.9).isActive = true
         timeLabelsStackView.heightAnchor.constraint(equalToConstant: 23).isActive = true
         
+        
+        timeUpdaterDisplay.topAnchor.constraint(equalTo: timeLabelsStackView.bottomAnchor, constant: 5).isActive = true
         timeUpdaterDisplay.widthAnchor.constraint(equalTo: widthAnchor, multiplier: 0.9).isActive = true
         timeUpdaterDisplay.heightAnchor.constraint(equalToConstant: 15).isActive = true
-        timeUpdaterDisplay.topAnchor.constraint(equalTo: timeLabelsStackView.bottomAnchor, constant: 5).isActive = true
         timeUpdaterDisplay.leftAnchor.constraint(equalTo: timeLabelsStackView.leftAnchor).isActive = true
-        
         
         let playerControllerStackView = UIStackView(arrangedSubviews: [shuffleButton, previousSongButton, playButton, nextSongButton, repeatButton])
         addSubview(playerControllerStackView)
@@ -337,7 +373,6 @@ class PlayerView: View {
         playerControllerStackView.topAnchor.constraint(equalTo: timeUpdaterDisplay.bottomAnchor, constant: idealGapBetweenItems).isActive = true
         playerControllerStackView.widthAnchor.constraint(equalTo: widthAnchor, multiplier: 0.8).isActive = true
         playerControllerStackView.heightAnchor.constraint(equalToConstant: 100).isActive = true
-        
     }
 }
 extension UIImageView {

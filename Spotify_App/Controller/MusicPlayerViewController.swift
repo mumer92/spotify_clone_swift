@@ -11,7 +11,6 @@ import UIKit
 import MediaPlayer
 import AVFoundation
 
-
 protocol ControlTabBarControllerDelegate: class {
     func musicPlayerFullScreenAnimation()
     func musicPlayerSmallScreenAnimation()
@@ -47,8 +46,10 @@ class MusicPlayerViewController: ViewController<PlayerView>, ControlCollectionVi
             if currentTime > 0.0 {
                 let time = Float(TimeInterval(currentTime) / audioPlayer.duration)
                 customView.timeUpdaterDisplay.value = time
+                customView.timeUpdaterDisplayForSmallView.value = time
             } else if currentTime == 0.0 {
                 customView.timeUpdaterDisplay.value = 0
+                customView.timeUpdaterDisplayForSmallView.value = 0
             }
         }
     }
@@ -193,7 +194,6 @@ class MusicPlayerViewController: ViewController<PlayerView>, ControlCollectionVi
         
 
         songInfoAttributedString.append(NSAttributedString(string: (currentTrack?.artist)!, attributes: [NSAttributedString.Key.strokeColor : UIColor.gray, NSAttributedString.Key.font : UIFont.systemFont(ofSize: 12), NSAttributedString.Key.paragraphStyle: paragraphStyle]))
-//        customView.songTitleScrollView.songNameLabel.attributedText = songInfoAttributedString
         customView.songTitleScrollView.attributedString = songInfoAttributedString
         
         //Setting second

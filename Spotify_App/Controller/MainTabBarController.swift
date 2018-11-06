@@ -13,6 +13,11 @@ class MainTabBarController: UITabBarController, ControlTabBarControllerDelegate 
     
     
     //MARK: - Layout Variables
+    var musicPlayerSmallHeight : CGFloat {
+        get {
+            return tabBar.frame.height
+        }
+    }
     var topConstraintForAlbumsTableView : NSLayoutConstraint?
     var tabBarHeightWithoutSafeBottom: CGFloat {
         get {
@@ -168,10 +173,11 @@ class MainTabBarController: UITabBarController, ControlTabBarControllerDelegate 
     
     //MARK: - Layout
     func setUpMusicPlayerView() {
+        // tabBar.frame.height
         
         musicPlayerView = musicPlayerViewController.customView
         view.addSubview(musicPlayerView)
-        addChild(musicPlayerViewController)
+//        addChild(musicPlayerViewController)
 
         musicPlayerView.bottomAnchor.constraint(equalTo: tabBar.topAnchor).isActive = true
         musicPlayerView.leftAnchor.constraint(equalTo: tabBar.leftAnchor).isActive = true
@@ -182,11 +188,10 @@ class MainTabBarController: UITabBarController, ControlTabBarControllerDelegate 
     }
     
     private func setupTabBars() {
-        
+    
         let homeViewController = UINavigationController(rootViewController: HomeViewController())
-        let browseViewController = UINavigationController(rootViewController: BrowseViewController())
+
         let searchViewController = UINavigationController(rootViewController: SearchViewController())
-        let radioViewController = UINavigationController(rootViewController: RadioViewController())
         let libraryViewController = UINavigationController(rootViewController: LibraryViewController())
         
         homeViewController.tabBarItem.image = UIImage(named: "home")
@@ -195,27 +200,23 @@ class MainTabBarController: UITabBarController, ControlTabBarControllerDelegate 
         searchViewController.tabBarItem.image = UIImage(named: "search")
         searchViewController.tabBarItem.title = "Browse"
         
-        browseViewController.tabBarItem.image = UIImage(named: "browse")
-        browseViewController.tabBarItem.title = "Search"
-        
-        radioViewController.tabBarItem.image = UIImage(named: "radio")
-        radioViewController.tabBarItem.title = "Radio"
-        
         libraryViewController.tabBarItem.image = UIImage(named: "library")
         libraryViewController.tabBarItem.title = "Your Library"
 
-        viewControllers = [homeViewController,browseViewController, searchViewController, radioViewController, libraryViewController]
+        viewControllers = [homeViewController, searchViewController, libraryViewController]
     }
     
     //MARK: - UITabBar Delegate
+    //To give small effect everytime i switch between tabs
     override func tabBar(_ tabBar: UITabBar, didSelect item: UITabBarItem) {
+
         let index = self.tabBar.items?.index(of: item)
         let subView = tabBar.subviews[index!+1].subviews.first as! UIImageView
-      
+
         subView.transform = CGAffineTransform.identity
         UIView.animateKeyframes(withDuration: 0.08, delay: 0.04, options: [.autoreverse], animations: {
             subView.transform = CGAffineTransform(scaleX: 0.8, y: 0.8)
-            
+
         }) { (true) in
             subView.transform = CGAffineTransform.identity
         }

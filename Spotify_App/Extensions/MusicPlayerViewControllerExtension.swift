@@ -34,15 +34,15 @@ extension MusicPlayerViewController {
 
                         if item.commonKey!.rawValue == "title" {
                             title = item.stringValue ?? "Unknown"
-                            print("Title = \(title)")
+//                            print("Title = \(title)")
                         }
                         if item.commonKey!.rawValue == "artist" {
                             artist = item.stringValue ?? "Unknown"
-                            print("Artist = \(artist)")
+//                            print("Artist = \(artist)")
                         }
                         if item.commonKey!.rawValue == "albumName" {
                             albumName = item.stringValue ?? "Unknown"
-                            print("Album Name = \(albumName) ")
+//                            print("Album Name = \(albumName) ")
                         }
                     }
                     
@@ -50,7 +50,7 @@ extension MusicPlayerViewController {
                     let asset = AVURLAsset(url: track)
                     let audioDuration = asset.duration
                     duration = Int(CMTimeGetSeconds(audioDuration))
-                    print("Duration : ", duration)
+//                    print("Duration : ", duration)
                     
                     let data = try Data(contentsOf: track)
                     tracks.append(Track(trackData: data, title: title, albumName: albumName, artist: artist, duration: duration, albumCover: nil))

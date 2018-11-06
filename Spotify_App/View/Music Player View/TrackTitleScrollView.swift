@@ -12,7 +12,7 @@ import UIKit
 class TrackTitleScrollView: UIScrollView, UIScrollViewDelegate {
     var attributedString = NSAttributedString() {
         didSet {
-            print(attributedString.string)
+
             songNameLabel.attributedText = attributedString
         }
     }
