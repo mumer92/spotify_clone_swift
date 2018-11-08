@@ -66,9 +66,10 @@ class MainTabBarController: UITabBarController, ControlTabBarControllerDelegate 
         
         ///Todo animation code here
         LoadingAnimation.startAnimation(view: self.view)
-//        LoadingAnimationView.startAnimation()
-//        LoadingAnimationView.stopAnimation()
-        
+        Timer.scheduledTimer(withTimeInterval: 3, repeats: false) { (t) in
+            LoadingAnimation.stopAnimation(view: self.view)
+        }
+       
         musicPlayerViewController.controlTabBarControllerDelegate = self
         tabBar.tintColor = .white
         tabBar.barTintColor = UIColor(red: 40/255, green: 40/255, blue: 40/255, alpha: 255)
