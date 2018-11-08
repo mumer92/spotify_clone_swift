@@ -62,6 +62,12 @@ class MainTabBarController: UITabBarController, ControlTabBarControllerDelegate 
     //MARK: - View Appareance
     override func viewDidLoad() {
         super.viewDidLoad()
+
+        
+        ///Todo animation code here
+        LoadingAnimation.startAnimation(view: self.view)
+//        LoadingAnimationView.startAnimation()
+//        LoadingAnimationView.stopAnimation()
         
         musicPlayerViewController.controlTabBarControllerDelegate = self
         tabBar.tintColor = .white
