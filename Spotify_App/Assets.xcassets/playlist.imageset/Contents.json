@@ -2,11 +2,11 @@
   "images" : [
     {
       "idiom" : "universal",
-      "filename" : "baseline_playlist_play_black_36pt_3x.png",
       "scale" : "1x"
     },
     {
       "idiom" : "universal",
+      "filename" : "playlist.png",
       "scale" : "2x"
     },
     {
