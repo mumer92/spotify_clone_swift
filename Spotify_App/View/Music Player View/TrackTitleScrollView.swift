@@ -12,12 +12,11 @@ import UIKit
 class TrackTitleScrollView: UIScrollView, UIScrollViewDelegate {
     var attributedString = NSAttributedString() {
         didSet {
-
             songNameLabel.attributedText = attributedString
         }
     }
     var songNameLabel : UILabel = {
-        let label = UILabel(frame: CGRect(origin: .zero, size: CGSize(width: 20, height: 15)))
+        let label = UILabel(frame: CGRect(origin: .zero, size: CGSize(width: 0, height: 0)))
         
         label.text = "somewhere i belooong and i've got nothing to say i cant believe blablabla..."
         label.font = UIFont.systemFont(ofSize: 16)
@@ -41,7 +40,7 @@ class TrackTitleScrollView: UIScrollView, UIScrollViewDelegate {
         translatesAutoresizingMaskIntoConstraints = false
 
         isDirectionalLockEnabled = true
-        isUserInteractionEnabled = true
+        isUserInteractionEnabled = false
         
         Timer.scheduledTimer(withTimeInterval: 9, repeats: true) { (t) in
             self.autoScroll()
@@ -57,10 +56,10 @@ class TrackTitleScrollView: UIScrollView, UIScrollViewDelegate {
     @objc func autoScroll() {
         
         let textWidth = attributedString.size().width
-        let mesafe = textWidth - bounds.width
-        if mesafe > 0 {
+        let distance = textWidth - bounds.width
+        if distance > 0 {
             UIView.animate(withDuration: 2.5, delay: 0, options: .curveLinear, animations: {
-                self.contentOffset.x += mesafe
+                self.contentOffset.x += distance
             }, completion: nil)
             
             DispatchQueue.main.asyncAfter(deadline: .now() + 4.5, execute: {
@@ -70,7 +69,6 @@ class TrackTitleScrollView: UIScrollView, UIScrollViewDelegate {
                 }, completion: nil)
             })
         }
-        
     }
     
     

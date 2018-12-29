@@ -15,7 +15,7 @@ class MainTabBarController: UITabBarController, ControlTabBarControllerDelegate 
     //MARK: - Layout Variables
     var musicPlayerSmallHeight : CGFloat {
         get {
-            return tabBar.frame.height
+            return tabBar.frame.height - 10
         }
     }
     var topConstraintForAlbumsTableView : NSLayoutConstraint?
@@ -57,7 +57,7 @@ class MainTabBarController: UITabBarController, ControlTabBarControllerDelegate 
     let screenSize = UIScreen.main.bounds
     
     var firstTouchPositionY : CGFloat?
-    var locationChange: CGFloat = 0
+    var locationYChange: CGFloat = 0
    
     //MARK: - View Appareance
     override func viewDidLoad() {
@@ -87,10 +87,11 @@ class MainTabBarController: UITabBarController, ControlTabBarControllerDelegate 
         let panGesture = UIPanGestureRecognizer(target: self, action: #selector(handlePanGesture(gesture:)))
         musicPlayerView.addGestureRecognizer(panGesture)
         
+        
        self.view.bringSubviewToFront(tabBar) //This is to keep tabBar in front of music players item.
     }
     
-    //MARK: - Handle UIPanGestureRecognizer
+    //MARK: - Gesture Functions
     @objc func tapGestureMakeFullScreen(gesture: UITapGestureRecognizer) {
         musicPlayerViewController.isSmall = false
         musicPlayerFullScreenAnimation()
@@ -107,37 +108,30 @@ class MainTabBarController: UITabBarController, ControlTabBarControllerDelegate 
         }
     }
     
-    
      ///TODO Doesn't work very well. fix it later on.
     @objc func handlePanGestureChange(gesture: UIPanGestureRecognizer) {
+        let limit = view.frame.height * 0.15 // Change isSmall value when user exceeds the limit
+        locationYChange = (gesture.location(in: view).y) - (firstTouchPositionY!) //
         
-        //limiti astiginda degistir amk musicPlayerViewController.isSmall = true  or false diye degistir.
-        let limit = view.frame.height * 0.15
-        
-        
-        let oldLocation = locationChange
-    
-        locationChange = (gesture.location(in: view).y) - (firstTouchPositionY!) // positive value means it moved down. negative value means that it moved up
-        let difference = locationChange - oldLocation
-        topConstraintForAlbumsTableView?.constant += difference
-        
-        if locationChange < 0 {
-            if locationChange.magnitude > limit {
+        if locationYChange < 0 { //moving up down
+            topConstraintForAlbumsTableView?.constant = -self.tabBarHeightWithoutSafeBottom + locationYChange
+            if locationYChange.magnitude > limit {
                 musicPlayerViewController.isSmall = false
             }
         } else { //moving down
-            if locationChange > limit {
+            topConstraintForAlbumsTableView?.constant = self.distanceToFullScreen + locationYChange
+            if locationYChange > limit {
                 musicPlayerViewController.isSmall = true
             }
         }
         
-        
-        if (topConstraintForAlbumsTableView?.constant)! > -tabBarHeightWithoutSafeBottom  { //can't be smaller than -tabBar.frame.height
+        if (topConstraintForAlbumsTableView?.constant)! > -tabBarHeightWithoutSafeBottom  { // can't be smaller than -tabBar.frame.height
             topConstraintForAlbumsTableView?.constant = -tabBarHeightWithoutSafeBottom
         }
+
+        
     }
     @objc func handlePanGestureEnded(gesture: UIPanGestureRecognizer) {
-        
         if musicPlayerViewController.isSmall {
             musicPlayerSmallScreenAnimation()
         } else {

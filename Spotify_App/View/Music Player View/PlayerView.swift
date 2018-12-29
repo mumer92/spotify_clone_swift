@@ -30,13 +30,11 @@ class PlayerView: View {
         upDownArrowButton.setImage(image, for: .normal)
         let playImage = UIImage(named: "play_18")?.withRenderingMode(.alwaysTemplate)
         playListButton.setImage(playImage, for: .normal)
-        
+        slippyText.alpha = 1
         upDownArrowButton.tintColor = .white
-        bottomConstraintForAvaibleDevicesButton?.constant = -2
+        bottomConstraintForAvaibleDevicesButton?.constant = -1
         addTimerUpdateToScreen()
         layoutIfNeeded()
-//        addSubview(timeUpdaterDisplayForSmallView)
-        
     }
     private func updateDisplayForFullScreenView() {
         
@@ -45,14 +43,13 @@ class PlayerView: View {
         
         let playListImage = UIImage(named: "playlist")?.withRenderingMode(.alwaysTemplate)
         playListButton.setImage(playListImage, for: .normal)
-        
+        slippyText.alpha = 0
         upDownArrowButton.tintColor = .white
         bottomConstraintForAvaibleDevicesButton?.constant = -idealGapBetweenItems
-        layoutIfNeeded()
         timeUpdaterDisplayForSmallView.removeFromSuperview()
     }
     private func addTimerUpdateToScreen() {
-           addSubview(timeUpdaterDisplayForSmallView)
+        addSubview(timeUpdaterDisplayForSmallView)
         timeUpdaterDisplayForSmallView.topAnchor.constraint(equalTo: topAnchor, constant: -1).isActive = true
         timeUpdaterDisplayForSmallView.widthAnchor.constraint(equalTo: widthAnchor, multiplier: 1).isActive = true
         timeUpdaterDisplayForSmallView.heightAnchor.constraint(equalToConstant: 5).isActive = true
@@ -86,25 +83,32 @@ class PlayerView: View {
         
         return button
     }()
-    
+    ///todo
+    //let slippyText = SlippyText()
+    let slippyText = SlippyTextNew()
+//    var slippyTexts = SlippyTexts()
     var playlistInfoLabel : UILabel = {
         let label = UILabel()
         label.translatesAutoresizingMaskIntoConstraints = false
         label.text = "Playing from Playlist"
         label.textColor = .white
-        label.numberOfLines = 2
-        label.font = .systemFont(ofSize: 15)
+        label.backgroundColor = .clear
+        label.sizeToFit()
+        label.textAlignment = .justified
+        label.numberOfLines = 1
+        label.font = .systemFont(ofSize: 13)
+        
         return label
     }()
     
     //MARK: - Song Information and options
     //Gotta turn this into Scroll view cause text has to scroll when song name is too long/
+    let songNameSlippyText = SlippyTextNew()
     var songTitleScrollView: TrackTitleScrollView = {
         let view = TrackTitleScrollView(frame: CGRect(origin: .zero, size: CGSize(width: 50, height: 80)))
         view.backgroundColor = .clear
         return view
     }()
- 
 
     var addToLibraryButton : UIButton = {
         let image = UIImage(named: "plus_symbol")?.withRenderingMode(.alwaysTemplate)
@@ -225,7 +229,7 @@ class PlayerView: View {
         let image = UIImage(named: "devices")?.withRenderingMode(.alwaysTemplate)
         let button = UIButton(type: .custom, backgroundColor: nil, image: image, imageTintColor: .white)
         button.setTitle(" Devices Avaible", for: .normal)
-        button.titleLabel?.font = .systemFont(ofSize: 12)
+        button.titleLabel?.font = .systemFont(ofSize: 11)
         
         return button
     }()
@@ -240,13 +244,9 @@ class PlayerView: View {
     
     override init(frame: CGRect) {
         super.init(frame: frame)
-        
         songTitleScrollView.translatesAutoresizingMaskIntoConstraints = false
-        
         backgroundColor = grayColor
-        
         setViews()
-        layoutViews()
         setupStackViews()
         translatesAutoresizingMaskIntoConstraints = false
         
@@ -257,7 +257,6 @@ class PlayerView: View {
     required init?(coder aDecoder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
-    
     override func tintColorDidChange() {
         print("color changed amina kodumun yerinde")
     }
@@ -269,8 +268,8 @@ class PlayerView: View {
         addSubview(timeUpdaterDisplay)
         addSubview(avaibleDevicesButton)
     }
+
     override func layoutViews() {
-        
         upDownArrowButton.widthAnchor.constraint(lessThanOrEqualToConstant: 32).isActive = true
         upDownArrowButton.heightAnchor.constraint(lessThanOrEqualToConstant: 32).isActive = true
         
@@ -280,7 +279,7 @@ class PlayerView: View {
         //setting up top Anchor in setupStackView function
         albumCoverCollectionView.centerXAnchor.constraint(equalTo: centerXAnchor).isActive = true
         albumCoverCollectionView.widthAnchor.constraint(equalTo: widthAnchor, multiplier: 1).isActive = true
-        let idealHeightForImageView = UIScreen.main.bounds.height / 2.9
+        let idealHeightForImageView = UIScreen.main.bounds.height / 2.6
         albumCoverCollectionView.heightAnchor.constraint(equalToConstant: idealHeightForImageView).isActive = true //gotta change it. todo
         
         //Player
@@ -307,8 +306,7 @@ class PlayerView: View {
     }
     
     private func setupStackViews() {
-        
-        let topStackView = UIStackView(arrangedSubviews: [upDownArrowButton,playlistInfoLabel,playListButton])
+        let topStackView = UIStackView(arrangedSubviews:[upDownArrowButton,slippyText,playListButton]) ///TODO
         topStackView.distribution = .equalSpacing
         topStackView.axis = .horizontal
         topStackView.translatesAutoresizingMaskIntoConstraints = false
@@ -318,14 +316,29 @@ class PlayerView: View {
         topStackView.centerXAnchor.constraint(equalTo: centerXAnchor).isActive = true
         topStackView.topAnchor.constraint(equalTo: topAnchor, constant: 1).isActive = true
         topStackView.widthAnchor.constraint(equalTo: widthAnchor, multiplier: 0.95).isActive = true
-        topStackView.heightAnchor.constraint(equalToConstant: 35).isActive = true
+        topStackView.heightAnchor.constraint(equalToConstant: 33).isActive = true
         
+        slippyText.centerXAnchor.constraint(equalTo: topStackView.centerXAnchor).isActive = true
+        slippyText.topAnchor.constraint(equalTo: topStackView.topAnchor, constant: 0).isActive = true
+        slippyText.widthAnchor.constraint(equalTo: topStackView.widthAnchor, multiplier: 0.3).isActive = true
+        slippyText.heightAnchor.constraint(equalTo: topStackView.heightAnchor).isActive = true
+        
+        slippyText.text = playlistInfoLabel.text!
+        slippyText.aspettaDuration = 1
+        slippyText.autoScrollDuration = true
+        slippyText.textObject.textColor = .white
+        slippyText.backgroundColor = .clear
+
+        //
         albumCoverCollectionView.topAnchor.constraint(equalTo: topStackView.bottomAnchor, constant: idealGapBetweenItems).isActive = true
+        //
         
         
-        let songInformationStackView = UIStackView(arrangedSubviews: [addToLibraryButton,songTitleScrollView, optionsButton])
+//        let songInformationStackView = UIStackView(arrangedSubviews: [addToLibraryButton,songTitleScrollView, optionsButton])
+        
+        let songInformationStackView = UIStackView(arrangedSubviews: [addToLibraryButton,songNameSlippyText, optionsButton])
         songInformationStackView.distribution = .equalSpacing
-        songInformationStackView.spacing = 0.5
+//        songInformationStackView.spacing = 0.5
         songInformationStackView.axis = .horizontal
         songInformationStackView.translatesAutoresizingMaskIntoConstraints = false
         songInformationStackView.alignment = .center
@@ -337,14 +350,18 @@ class PlayerView: View {
         songInformationStackView.widthAnchor.constraint(equalTo: widthAnchor, multiplier: 0.90).isActive = true
         songInformationStackView.heightAnchor.constraint(equalToConstant: 40).isActive = true
         
-        songInformationStackView.subviews[1].widthAnchor.constraint(equalTo: widthAnchor, multiplier: 0.65).isActive = true
-
+        songInformationStackView.subviews[1].widthAnchor.constraint(equalTo: widthAnchor, multiplier: 0.60).isActive = true
         songInformationStackView.subviews[1].heightAnchor.constraint(equalToConstant: 40).isActive = true
-
         songInformationStackView.subviews[1].centerXAnchor.constraint(equalTo: centerXAnchor).isActive = true
         songInformationStackView.subviews[1].topAnchor.constraint(equalTo: songInformationStackView.subviews[0].topAnchor).isActive = true
         
+        songNameSlippyText.text = "yo yo yo one thing idk why it ."
+        songNameSlippyText.backgroundColor = .clear
+        songNameSlippyText.autoScrollDuration = true
+        songNameSlippyText.aspettaDuration = 1
+        songNameSlippyText.textObject.textColor = .white
         
+        //
         let timeLabelsStackView = UIStackView(arrangedSubviews: [secondPassedInfoLabel, totalTimeInfoLabel])
         addSubview(timeLabelsStackView)
         timeLabelsStackView.translatesAutoresizingMaskIntoConstraints = false
@@ -361,7 +378,7 @@ class PlayerView: View {
         timeUpdaterDisplay.widthAnchor.constraint(equalTo: widthAnchor, multiplier: 0.9).isActive = true
         timeUpdaterDisplay.heightAnchor.constraint(equalToConstant: 15).isActive = true
         timeUpdaterDisplay.leftAnchor.constraint(equalTo: timeLabelsStackView.leftAnchor).isActive = true
-        
+        //
         let playerControllerStackView = UIStackView(arrangedSubviews: [shuffleButton, previousSongButton, playButton, nextSongButton, repeatButton])
         addSubview(playerControllerStackView)
         playerControllerStackView.translatesAutoresizingMaskIntoConstraints = false

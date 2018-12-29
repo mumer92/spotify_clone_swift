@@ -17,17 +17,16 @@ class AlbumCoverCollectionView: UICollectionView {
     
     //MARK: Variables
     let cellId = "AlbumCoverCell"
-    var albumCovers: [UIImage] = [UIImage(named: "the_way_of_all_flesh")!, UIImage(named: "the_way_of_all_flesh")!, UIImage(named: "lenfant_sauvage")!, UIImage(named: "the_way_of_all_flesh")!, UIImage(named: "the_way_of_all_flesh")!, UIImage(named: "the_way_of_all_flesh")!, UIImage(named: "flying_whales")!, UIImage(named: "the_way_of_all_flesh")!, UIImage(named: "the_way_of_all_flesh")!, UIImage(named: "the_way_of_all_flesh")!, UIImage(named: "lenfant_sauvage")!, UIImage(named: "the_way_of_all_flesh")!]
+    var albumCovers: [UIImage] = [UIImage(named: "the_way_of_all_flesh")!, UIImage(named: "the_way_of_all_flesh")!, UIImage(named: "lenfant_sauvage")!, UIImage(named: "the_way_of_all_flesh")!, UIImage(named: "the_way_of_all_flesh")!, UIImage(named: "the_way_of_all_flesh")!, UIImage(named: "flying_whales")!, UIImage(named: "the_way_of_all_flesh")!, UIImage(named: "the_way_of_all_flesh")!, UIImage(named: "the_way_of_all_flesh")!, UIImage(named: "lenfant_sauvage")!, UIImage(named: "the_way_of_all_flesh")!,UIImage(named: "the_way_of_all_flesh")!, UIImage(named: "the_way_of_all_flesh")!, UIImage(named: "the_way_of_all_flesh")!, UIImage(named: "the_way_of_all_flesh")!, UIImage(named: "lenfant_sauvage")!, UIImage(named: "the_way_of_all_flesh")!]
     
-    let itemHeight = UIScreen.main.bounds.height / 3
-    let itemWidth = UIScreen.main.bounds.width / 1.3
+    let itemHeight = UIScreen.main.bounds.height / 2.6
+    let itemWidth = UIScreen.main.bounds.width / 1.4
     var controlCollectionViewDelegate: ControlCollectionViewDelegate?
     let pageController = UIPageControl()
     
     var currentPage: Int = 0 { //Changes
         didSet {
             pageController.currentPage = currentPage
-            
             if currentPage == albumCovers.count { // to prevent bug
                 currentPage = albumCovers.count - 1
             } else if currentPage < 0 { // to prevent bug
@@ -49,6 +48,10 @@ class AlbumCoverCollectionView: UICollectionView {
     
     func animateCellForNextSong() {
         let indexPath = IndexPath(row: currentPage, section: 0)
+        //todo fix
+        print("indexPath : " , indexPath)
+        print("currentPage : " , currentPage)
+        
         let cell : AlbumCoverCell = cellForItem(at: indexPath) as! AlbumCoverCell
         let prevIndexPath = IndexPath(row: currentPage-1, section: 0)
         var prevCell = AlbumCoverCell()
@@ -62,7 +65,6 @@ class AlbumCoverCollectionView: UICollectionView {
             prevCell = cellForItem(at: getIndexPath(index: currentPage)) as! AlbumCoverCell
             makeCellUnselected(previousCell: prevCell)
         }
-        
 
         ///To animate main cell
         cell.transform = CGAffineTransform.identity
@@ -113,7 +115,7 @@ class AlbumCoverCollectionView: UICollectionView {
         dataSource = self
         register(AlbumCoverCell.self, forCellWithReuseIdentifier: cellId)
         
-        showsHorizontalScrollIndicator = false
+        showsHorizontalScrollIndicator = true
         decelerationRate = UIScrollView.DecelerationRate.fast
         backgroundColor = .clear
     }
@@ -182,6 +184,7 @@ extension AlbumCoverCollectionView: UICollectionViewDelegate, UICollectionViewDa
             newPage = Float(albumCovers.count - 1)
         }
         
+///TODO
         if currentPage > Int(newPage) { //moved to previous cell
             controlCollectionViewDelegate?.collectionViewScrolled(goToNextSong: false)
             currentPage = Int(newPage) //bug

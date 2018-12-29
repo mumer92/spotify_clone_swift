@@ -32,7 +32,7 @@ class MusicPlayerViewController: ViewController<PlayerView>, ControlCollectionVi
     
     //MARK: - Music Player Variables
     var audioPlayer = AVAudioPlayer()
-    
+    var audioSession = AVAudioSession.sharedInstance()
     var timer = Timer()
     var songs : [Track] = [] {
         didSet {
@@ -96,6 +96,9 @@ class MusicPlayerViewController: ViewController<PlayerView>, ControlCollectionVi
                 guard let data = currentTrack?.trackData else {return}
                 try audioPlayer = AVAudioPlayer(data: data)
                 audioPlayer.prepareToPlay()
+                
+                try audioSession.setCategory(.playback, mode: .spokenAudio, options: [.mixWithOthers, .allowAirPlay])
+                try audioSession.setActive(true)
             } catch {
                 print("error inside currentTrack didSet")
             }
@@ -130,13 +133,13 @@ class MusicPlayerViewController: ViewController<PlayerView>, ControlCollectionVi
         didSet {
             if isSmall {
                 customView.isSmall = self.isSmall
-                controlTabBarControllerDelegate?.musicPlayerSmallScreenAnimation()
+//                controlTabBarControllerDelegate?.musicPlayerSmallScreenAnimation()
                 
                 customView.playListButton.removeTarget(self, action: #selector(showQueue(_:)), for: .touchUpInside)
                 customView.playListButton.addTarget(self, action: #selector(playPauseSong), for: .touchUpInside)
             } else {
                 customView.isSmall = self.isSmall
-                controlTabBarControllerDelegate?.musicPlayerFullScreenAnimation()
+//                controlTabBarControllerDelegate?.musicPlayerFullScreenAnimation()
                 
                 customView.playListButton.removeTarget(self, action: #selector(playPauseSong), for: .touchUpInside)
                 customView.playListButton.addTarget(self, action: #selector(showQueue(_:)), for: .touchUpInside)
@@ -177,7 +180,15 @@ class MusicPlayerViewController: ViewController<PlayerView>, ControlCollectionVi
         var trck = track
         return Data(bytes: &trck, count: MemoryLayout<Track>.stride)
     }
-    @objc func upDownArrowButtonAction() {isSmall = !isSmall}
+    @objc func upDownArrowButtonAction() {
+        isSmall = !isSmall
+        if isSmall {
+             controlTabBarControllerDelegate?.musicPlayerSmallScreenAnimation()
+        } else {
+            controlTabBarControllerDelegate?.musicPlayerFullScreenAnimation()
+        }
+        
+    }
     
     @objc func showQueue(_ button: UIButton) {
         print("showQueue worked")
@@ -190,11 +201,16 @@ class MusicPlayerViewController: ViewController<PlayerView>, ControlCollectionVi
         let paragraphStyle = NSMutableParagraphStyle()
         paragraphStyle.alignment = .center
         
-        let songInfoAttributedString = NSMutableAttributedString(string: "\((currentTrack?.title)!)\n", attributes: [NSAttributedString.Key.font : UIFont.boldSystemFont(ofSize: 18), NSAttributedString.Key.paragraphStyle : paragraphStyle])
+        let songInfoAttributedString = NSMutableAttributedString(string: "\((currentTrack?.title)!)\n", attributes: [NSAttributedString.Key.font : UIFont.boldSystemFont(ofSize: 18), NSAttributedString.Key.paragraphStyle : paragraphStyle]) //should be 18
         
-
         songInfoAttributedString.append(NSAttributedString(string: (currentTrack?.artist)!, attributes: [NSAttributedString.Key.strokeColor : UIColor.gray, NSAttributedString.Key.font : UIFont.systemFont(ofSize: 12), NSAttributedString.Key.paragraphStyle: paragraphStyle]))
-        customView.songTitleScrollView.attributedString = songInfoAttributedString
+        
+        let songInfoAttributedStringForSmallView = NSMutableAttributedString(string: "\((currentTrack?.title)!) • ", attributes: [NSAttributedString.Key.font : UIFont.boldSystemFont(ofSize: 13), NSAttributedString.Key.paragraphStyle : paragraphStyle])
+        
+        songInfoAttributedStringForSmallView.append(NSAttributedString(string: (currentTrack?.artist)!, attributes: [NSAttributedString.Key.strokeColor : UIColor.lightGray, NSAttributedString.Key.font : UIFont.systemFont(ofSize: 13), NSAttributedString.Key.paragraphStyle: paragraphStyle]))
+        
+        customView.songNameSlippyText.attributedText = songInfoAttributedString
+        customView.slippyText.attributedText = songInfoAttributedStringForSmallView
         
         //Setting second
         let totalSecond : Int = (currentTrack?.duration)!
@@ -298,7 +314,6 @@ class MusicPlayerViewController: ViewController<PlayerView>, ControlCollectionVi
             }
         }
 }
-
 
 
 //MARK: Extension

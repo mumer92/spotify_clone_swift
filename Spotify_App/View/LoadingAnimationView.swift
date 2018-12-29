@@ -24,7 +24,7 @@ class LoadingAnimation {
    
     //  Setting Layer's paths
     private static func addLayerToView(view: UIView) {
-
+        
         backgroundView.frame = CGRect(x: view.center.x - 80, y: view.center.y + -45, width: 160, height: 90)
         backgroundView.layer.masksToBounds = true
         backgroundView.layer.cornerRadius = 15
