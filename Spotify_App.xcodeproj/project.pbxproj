@@ -9,7 +9,6 @@
 /* Begin PBXBuildFile section */
 		8A16A95921875F2D005906EA /* InnerCollectionViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8A16A95821875F2D005906EA /* InnerCollectionViewCell.swift */; };
 		8A16A95C218764C8005906EA /* HeaderView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8A16A95B218764C8005906EA /* HeaderView.swift */; };
-		8A427B4E21B1D15F00E2F1C2 /* SlippyText.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8A427B4D21B1D15F00E2F1C2 /* SlippyText.swift */; };
 		8A427B5021B1D17A00E2F1C2 /* SlippyTexts.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8A427B4F21B1D17A00E2F1C2 /* SlippyTexts.swift */; };
 		8A44EB012172CE1A002C229C /* ButtonExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8A44EB002172CE1A002C229C /* ButtonExtension.swift */; };
 		8A4B90812178A5B4009B4EA7 /* AlbumCoverCollectionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8A4B90802178A5B4009B4EA7 /* AlbumCoverCollectionView.swift */; };
@@ -63,7 +62,6 @@
 /* Begin PBXFileReference section */
 		8A16A95821875F2D005906EA /* InnerCollectionViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InnerCollectionViewCell.swift; sourceTree = "<group>"; };
 		8A16A95B218764C8005906EA /* HeaderView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HeaderView.swift; sourceTree = "<group>"; };
-		8A427B4D21B1D15F00E2F1C2 /* SlippyText.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SlippyText.swift; sourceTree = "<group>"; };
 		8A427B4F21B1D17A00E2F1C2 /* SlippyTexts.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SlippyTexts.swift; sourceTree = "<group>"; };
 		8A44EB002172CE1A002C229C /* ButtonExtension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ButtonExtension.swift; sourceTree = "<group>"; };
 		8A4B90802178A5B4009B4EA7 /* AlbumCoverCollectionView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AlbumCoverCollectionView.swift; sourceTree = "<group>"; };
@@ -239,7 +237,6 @@
 				8AF6A6372170091A00DC776C /* Assets.xcassets */,
 				8AF6A6392170091A00DC776C /* LaunchScreen.storyboard */,
 				8AF6A63C2170091A00DC776C /* Info.plist */,
-				8A427B4D21B1D15F00E2F1C2 /* SlippyText.swift */,
 				8A6ED3A721B5BD2D00ABB104 /* SlippyTextNew.swift */,
 				8A6C728021B9597D008A36BB /* Extensions.swift */,
 				8A427B4F21B1D17A00E2F1C2 /* SlippyTexts.swift */,
@@ -376,7 +373,6 @@
 			buildActionMask = 2147483647;
 			files = (
 				8A8269C22188D77F00620EFE /* HomeView.swift in Sources */,
-				8A427B4E21B1D15F00E2F1C2 /* SlippyText.swift in Sources */,
 				8AB984B4217B5F23007D994F /* LoadingAnimationView.swift in Sources */,
 				8A5A69DC21762E110010EE06 /* Track.swift in Sources */,
 				8A44EB012172CE1A002C229C /* ButtonExtension.swift in Sources */,

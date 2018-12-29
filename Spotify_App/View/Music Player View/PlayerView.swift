@@ -84,9 +84,9 @@ class PlayerView: View {
         return button
     }()
     ///todo
-    //let slippyText = SlippyText()
+    
     let slippyText = SlippyTextNew()
-//    var slippyTexts = SlippyTexts()
+
     var playlistInfoLabel : UILabel = {
         let label = UILabel()
         label.translatesAutoresizingMaskIntoConstraints = false
