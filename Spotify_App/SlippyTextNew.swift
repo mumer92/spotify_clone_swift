@@ -15,8 +15,8 @@ public class SlippyTextNew: UIScrollView,  UIScrollViewDelegate {
     //MARK: - Public Objects
     var textObject : UILabel = {
         let label = UILabel()
-        label.text = "sivasin yollarina cikayim daglarina"
-        label.backgroundColor = .clear
+        label.text = "Song Name"
+        label.backgroundColor = .orange
         label.translatesAutoresizingMaskIntoConstraints = false
         label.numberOfLines = 2
         label.font = .systemFont(ofSize: 15)
@@ -34,7 +34,6 @@ public class SlippyTextNew: UIScrollView,  UIScrollViewDelegate {
             backwardScrollDuration = forwardScrollDuration
         }
     }
-    
     
     public var attributedText: NSAttributedString = NSAttributedString(string: "") {
         didSet {
@@ -107,8 +106,13 @@ public class SlippyTextNew: UIScrollView,  UIScrollViewDelegate {
     
     //MARK: - Functions
     public override func layoutSubviews() {
+        
         if bounds.width > 0 {
-            frameWidth = bounds.width
+            frameWidth = frame.width
+            print("Frame Width : " , frameWidth) //118
+            print("Text Width2 Extension : " , attributedText.size().width) // 151
+            print("Text Object Width :  : " , textObject.frame.width) //163
+            //            print("Text Width2 : " , attributedText.getLargestLineWidth()) // 0
         }
     }
     public func startSliding() {
@@ -154,4 +158,21 @@ public class SlippyTextNew: UIScrollView,  UIScrollViewDelegate {
 
 //MARK: - Extension
 
+
+extension String {
+    func height(withConstrainedWidth width: CGFloat, font: UIFont) -> CGFloat {
+        let constraintRect = CGSize(width: width, height: .greatestFiniteMagnitude)
+        let boundingBox = self.boundingRect(with: constraintRect, options: .usesLineFragmentOrigin, attributes: [NSAttributedString.Key.font: font], context: nil)
+        
+        return ceil(boundingBox.height)
+    }
+    
+    func width(withConstrainedHeight height: CGFloat, font: UIFont) -> CGFloat {
+        let constraintRect = CGSize(width: .greatestFiniteMagnitude, height: height)
+        let boundingBox = self.boundingRect(with: constraintRect, options: .usesLineFragmentOrigin, attributes: [NSAttributedString.Key.font: font], context: nil)
+        
+        return ceil(boundingBox.width)
+    }
+    
+}
 

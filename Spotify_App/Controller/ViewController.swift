@@ -13,7 +13,6 @@ class ViewController<V: View>: UIViewController {
     
     override func loadView() {
         view = V()
-        print("wazzup")
     }
     var customView: V {
         return view as! V

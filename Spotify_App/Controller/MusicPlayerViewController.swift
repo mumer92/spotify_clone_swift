@@ -18,14 +18,13 @@ protocol ControlTabBarControllerDelegate: class {
 
 class MusicPlayerViewController: ViewController<PlayerView>, ControlCollectionViewDelegate {
     
-     //MARK: - NSLayoutConstraints
+    //MARK: - NSLayoutConstraints
     var topConstraintForAlbumsTableView : NSLayoutConstraint?
     
     //MARK: - Layout Variables
     var controlTabBarControllerDelegate: ControlTabBarControllerDelegate?
-    
-    var originalTabBarFrame : CGRect?
     let screenSize = UIScreen.main.bounds
+    var originalTabBarFrame : CGRect?
     
     var firstTouchPosition : CGPoint?
     var locationChange: CGFloat = 0
@@ -34,9 +33,17 @@ class MusicPlayerViewController: ViewController<PlayerView>, ControlCollectionVi
     var audioPlayer = AVAudioPlayer()
     var audioSession = AVAudioSession.sharedInstance()
     var timer = Timer()
+    var musicPlayer = MusicPlayer() {
+        didSet {
+            customView.musicPlayer = musicPlayer
+        }
+    }
+    
+    ///TODO Degisecekler listesi
     var songs : [Track] = [] {
         didSet {
-            print("songs : " , songs)
+            customView.albumCoverCollectionView.songs = self.songs
+            print("songs count : " , songs.count)
         }
     }
     var songsBackup : [Track] = []
@@ -53,40 +60,33 @@ class MusicPlayerViewController: ViewController<PlayerView>, ControlCollectionVi
             }
         }
     }
-    var isShuffled : Bool = false {
+    var repeatPlayList : Bool = false {
         didSet {
-            if isShuffled {
-                songs = songs.shuffled()
-                customView.albumCoverCollectionView.reloadData()
-            } else {
-                songs = songsBackup
-                customView.albumCoverCollectionView.reloadData()
-            }
-            currentTrack = songs.first
-            updateMusicPlayer(track: currentTrack!)
+            musicPlayer.repeatPlaylist = repeatPlayList
+            customView.musicPlayer = musicPlayer
         }
     }
-    var repeatPlayList : Bool = false
-    var selectedSongIndex: Int = 0 {
+    var currentSongIndex: Int = 0 {
         didSet {
-            if selectedSongIndex < 0  { // repeatPlayList = true
+            if currentSongIndex < 0  { // repeatPlayList = true
                 if repeatPlayList {
-                    selectedSongIndex = songs.count - 1
+                    currentSongIndex = songs.count - 1
                 } else {
-                    selectedSongIndex = 0
+                    currentSongIndex = 0
                 }
-            } else if selectedSongIndex == songs.count { // repeatPlayList = true
+            } else if currentSongIndex == songs.count { // repeatPlayList = true
                 if repeatPlayList {
-                    selectedSongIndex = 0
+                    currentSongIndex = 0
                 } else {
-                    selectedSongIndex = songs.count - 1
+                    currentSongIndex = songs.count - 1
                 }
             }
+            //customView.albumCoverCollectionView.currentPage = currentSongIndex
+            musicPlayer.currentSongIndex = currentSongIndex
+            customView.musicPlayer = musicPlayer
         }
     }
     
-    var dataArray : [Data] = []
-    var shuffled = false
     var currentTrack: Track? {
         didSet {
             resetTimer()
@@ -104,6 +104,23 @@ class MusicPlayerViewController: ViewController<PlayerView>, ControlCollectionVi
             }
         }
     }
+    var isShuffled : Bool = false {
+        didSet {
+            if isShuffled {
+                songs = songs.shuffled()
+//                customView.albumCoverCollectionView.reloadData()
+                
+            } else {
+                songs = songsBackup
+//                customView.albumCoverCollectionView.reloadData()
+            }
+            currentTrack = songs.first
+            updateMusicPlayer(track: currentTrack!)
+            musicPlayer.isShuffled = isShuffled
+            customView.musicPlayer = musicPlayer
+        }
+    }
+   
     
     //MARK: - Variables
     var isPlaying : Bool = false {
@@ -127,8 +144,11 @@ class MusicPlayerViewController: ViewController<PlayerView>, ControlCollectionVi
                   customView.playListButton.setImage(playImage, for: .normal)
                 }
             }
+            musicPlayer.isPlaying = isPlaying
+            customView.musicPlayer = musicPlayer
         }
     }
+    
     var isSmall: Bool = true {
         didSet {
             if isSmall {
@@ -144,27 +164,27 @@ class MusicPlayerViewController: ViewController<PlayerView>, ControlCollectionVi
                 customView.playListButton.removeTarget(self, action: #selector(playPauseSong), for: .touchUpInside)
                 customView.playListButton.addTarget(self, action: #selector(showQueue(_:)), for: .touchUpInside)
             }
+            
+            musicPlayer.isSmall = isSmall
+            customView.musicPlayer = musicPlayer
         }
     }
     
-    let myArr = ["sa", "canim", "ben", "senin", "amcanim"]
     //MARK: - View Appareance
     override func viewDidLoad() {
         super.viewDidLoad()
-        
-        isSmall = true
 
-        let cv = customView.albumCoverCollectionView
-        cv.controlCollectionViewDelegate = self
+//        let cv = customView.albumCoverCollectionView
+//        cv.controlCollectionViewDelegate = self
         
         //Setting Songs And Media Player
         songs = getSongs() //pulling all the songs with extension
-        DispatchQueue.global(qos: .background).async {
-            print("running in the background babe")
-            self.songsBackup = self.getSongs()
-        }
-        selectedSongIndex = 0
-        currentTrack = songs[selectedSongIndex]
+        songsBackup = songs
+        currentSongIndex = 0
+        isSmall = true
+        musicPlayer = MusicPlayer(songs: songs, isPlaying: isPlaying, isSmall: isSmall, currentSongIndex: currentSongIndex, isShuffled: isShuffled, repeatPlaylist: repeatPlayList)
+        currentTrack = songs[currentSongIndex]
+        
         
         //Setting Gesture Recognizers
         customView.upDownArrowButton.addTarget(self, action: #selector(upDownArrowButtonAction), for: .touchUpInside)
@@ -217,36 +237,35 @@ class MusicPlayerViewController: ViewController<PlayerView>, ControlCollectionVi
         customView.totalTimeInfoLabel.text = secondsToUserTime(second: totalSecond)
 
         //Setting Background Image
-        //can set it again after i can use TRACK's images
-        customView.backgroundImage = customView.albumCoverCollectionView.albumCovers[selectedSongIndex]
+        customView.backgroundImage = customView.albumCoverCollectionView.songs[currentSongIndex].albumCover
     }
     @objc func playPauseSong() {
         isPlaying = !isPlaying
     }
     @objc func previousSong() {
         if currentTime > 4 { // Go to beggining of the current song if song is playing more than 4 seconds
-            currentTrack = songs[selectedSongIndex]
+            currentTrack = songs[currentSongIndex]
         } else {
-            selectedSongIndex -= 1
-            currentTrack = songs[selectedSongIndex]
+            currentSongIndex -= 1
+            currentTrack = songs[currentSongIndex]
         }
         
         isPlaying = true
         
-        let indexPath = IndexPath(item: selectedSongIndex, section: 0)
+        let indexPath = IndexPath(item: currentSongIndex, section: 0)
         customView.albumCoverCollectionView.scrollToItem(at: indexPath, at: .centeredHorizontally, animated: true)
-        customView.albumCoverCollectionView.currentPage -= 1
-        customView.albumCoverCollectionView.animateCellForPreviousSong()
+//        customView.albumCoverCollectionView.currentPage -= 1
+//        customView.albumCoverCollectionView.animateCellForPreviousSong()
     }
     @objc func nextSong() {
-        selectedSongIndex += 1
-        currentTrack = songs[selectedSongIndex]
+        currentSongIndex += 1
+        currentTrack = songs[currentSongIndex]
         isPlaying = true
         
-        let indexPath = IndexPath(item: selectedSongIndex, section: 0)
+        let indexPath = IndexPath(item: currentSongIndex, section: 0)
         customView.albumCoverCollectionView.scrollToItem(at: indexPath, at: .centeredHorizontally, animated: true)
-        customView.albumCoverCollectionView.currentPage += 1
-        customView.albumCoverCollectionView.animateCellForNextSong()
+//        customView.albumCoverCollectionView.currentPage += 1
+//        customView.albumCoverCollectionView.animateCellForNextSong()
     }
     
     @objc func shuffle(_ button: UIButton) {
@@ -300,12 +319,12 @@ class MusicPlayerViewController: ViewController<PlayerView>, ControlCollectionVi
     //MARK: ControlCollectionViewDelegate Function
     func collectionViewScrolled(goToNextSong: Bool) {
         if goToNextSong {
-            selectedSongIndex += 1
-            currentTrack = songs[selectedSongIndex]
+            currentSongIndex += 1
+            currentTrack = songs[currentSongIndex]
             isPlaying = true
         } else {
-            selectedSongIndex -= 1
-            currentTrack = songs[selectedSongIndex]
+            currentSongIndex -= 1
+            currentTrack = songs[currentSongIndex]
             isPlaying = true
             //todo check it again if it's necessary or not
             customView.albumCoverCollectionView.isScrollEnabled = false

@@ -15,22 +15,44 @@ protocol ControlCollectionViewDelegate: class {
 
 class AlbumCoverCollectionView: UICollectionView {
     
-    //MARK: Variables
+    //MARK: - Constants
     let cellId = "AlbumCoverCell"
-    var albumCovers: [UIImage] = [UIImage(named: "the_way_of_all_flesh")!, UIImage(named: "the_way_of_all_flesh")!, UIImage(named: "lenfant_sauvage")!, UIImage(named: "the_way_of_all_flesh")!, UIImage(named: "the_way_of_all_flesh")!, UIImage(named: "the_way_of_all_flesh")!, UIImage(named: "flying_whales")!, UIImage(named: "the_way_of_all_flesh")!, UIImage(named: "the_way_of_all_flesh")!, UIImage(named: "the_way_of_all_flesh")!, UIImage(named: "lenfant_sauvage")!, UIImage(named: "the_way_of_all_flesh")!,UIImage(named: "the_way_of_all_flesh")!, UIImage(named: "the_way_of_all_flesh")!, UIImage(named: "the_way_of_all_flesh")!, UIImage(named: "the_way_of_all_flesh")!, UIImage(named: "lenfant_sauvage")!, UIImage(named: "the_way_of_all_flesh")!]
-    
     let itemHeight = UIScreen.main.bounds.height / 2.6
     let itemWidth = UIScreen.main.bounds.width / 1.4
-    var controlCollectionViewDelegate: ControlCollectionViewDelegate?
     let pageController = UIPageControl()
     
+    //MARK: - Variables
+
+    var musicPlayer : MusicPlayer = MusicPlayer() {
+        didSet {
+            self.songs = musicPlayer.songs
+            currentPage = musicPlayer.currentSongIndex
+        }
+    }
+
+    var songs: [Track] = [] {
+        didSet {
+            reloadData()
+        }
+    }
+    
+    var controlCollectionViewDelegate: ControlCollectionViewDelegate?
     var currentPage: Int = 0 { //Changes
         didSet {
             pageController.currentPage = currentPage
-            if currentPage == albumCovers.count { // to prevent bug
-                currentPage = albumCovers.count - 1
-            } else if currentPage < 0 { // to prevent bug
-                currentPage = 0
+            
+            if currentPage < 0  { // repeatPlayList = true
+                if musicPlayer.repeatPlaylist {
+                    currentPage = songs.count - 1
+                } else {
+                    currentPage = 0
+                }
+            } else if currentPage == songs.count { // repeatPlayList = true
+                if musicPlayer.repeatPlaylist {
+                    currentPage = 0
+                } else {
+                    currentPage = songs.count - 1
+                }
             }
         }
     }
@@ -48,9 +70,6 @@ class AlbumCoverCollectionView: UICollectionView {
     
     func animateCellForNextSong() {
         let indexPath = IndexPath(row: currentPage, section: 0)
-        //todo fix
-        print("indexPath : " , indexPath)
-        print("currentPage : " , currentPage)
         
         let cell : AlbumCoverCell = cellForItem(at: indexPath) as! AlbumCoverCell
         let prevIndexPath = IndexPath(row: currentPage-1, section: 0)
@@ -58,7 +77,7 @@ class AlbumCoverCollectionView: UICollectionView {
 
         if currentPage == 0 { //to prevent viewcontroller next button's bug
             prevCell = cellForItem(at: getIndexPath(index: currentPage)) as! AlbumCoverCell
-        } else if currentPage < albumCovers.count - 1 {
+        } else if currentPage < songs.count - 1 {
             prevCell = cellForItem(at: prevIndexPath) as! AlbumCoverCell
             makeCellUnselected(previousCell: prevCell)
         } else { //last song..
@@ -83,7 +102,7 @@ class AlbumCoverCollectionView: UICollectionView {
         let nextIndexPath = IndexPath(row: currentPage+1, section: 0)
         var nextCell = AlbumCoverCell()
         
-        if currentPage == albumCovers.count {
+        if currentPage == songs.count {
             // don't change anything. We are in the last song
         } else if currentPage == 0 {
             nextCell = cellForItem(at: getIndexPath(index: 0)) as! AlbumCoverCell
@@ -110,7 +129,7 @@ class AlbumCoverCollectionView: UICollectionView {
         myLayout.minimumLineSpacing = 10
         super.init(frame: frame, collectionViewLayout: myLayout)
 
-        pageController.numberOfPages = albumCovers.count - 1
+        pageController.numberOfPages = songs.count - 1
         delegate = self
         dataSource = self
         register(AlbumCoverCell.self, forCellWithReuseIdentifier: cellId)
@@ -138,11 +157,12 @@ class AlbumCoverCollectionView: UICollectionView {
 //MARK: Extension
 extension AlbumCoverCollectionView: UICollectionViewDelegate, UICollectionViewDataSource, UICollectionViewDelegateFlowLayout {
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        return albumCovers.count
+        
+        return songs.count
     }
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         let cell = collectionView.dequeueReusableCell(withReuseIdentifier: cellId, for: indexPath) as! AlbumCoverCell
-        cell.imageView.image = albumCovers[indexPath.row]
+        cell.imageView.image = songs[indexPath.row].albumCover
         cell.alpha = 0.7
         cell.transform = CGAffineTransform.init(scaleX: 0.85, y: 0.85)
         return cell
@@ -180,8 +200,8 @@ extension AlbumCoverCollectionView: UICollectionViewDelegate, UICollectionViewDa
             }
         }
         
-        if newPage == Float(albumCovers.count) { // This statement prevents bug.
-            newPage = Float(albumCovers.count - 1)
+        if newPage == Float(songs.count) { // This statement prevents bug.
+            newPage = Float(songs.count - 1)
         }
         
 ///TODO

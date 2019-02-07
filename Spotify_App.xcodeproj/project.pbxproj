@@ -27,12 +27,8 @@
 		8A5A69D921762C960010EE06 /* Adoration For None.mp3 in Resources */ = {isa = PBXBuildFile; fileRef = 8A5A69CD21762C940010EE06 /* Adoration For None.mp3 */; };
 		8A5A69DA21762C960010EE06 /* The Way Of All Flesh.mp3 in Resources */ = {isa = PBXBuildFile; fileRef = 8A5A69CE21762C960010EE06 /* The Way Of All Flesh.mp3 */; };
 		8A5A69DC21762E110010EE06 /* Track.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8A5A69DB21762E110010EE06 /* Track.swift */; };
-		8A69096921C3FAEB006EB211 /* Gojira - The Way Of All Flesh (Hidden instrumental song).mp3 in Resources */ = {isa = PBXBuildFile; fileRef = 8A69096421C3FAEB006EB211 /* Gojira - The Way Of All Flesh (Hidden instrumental song).mp3 */; };
-		8A69096A21C3FAEB006EB211 /* Gojira - The Gift Of Guilt GUITAR COVER (Instrumental).mp3 in Resources */ = {isa = PBXBuildFile; fileRef = 8A69096521C3FAEB006EB211 /* Gojira - The Gift Of Guilt GUITAR COVER (Instrumental).mp3 */; };
-		8A69096B21C3FAEB006EB211 /* Gojira - Lenfant sauvage (instrumental).mp3 in Resources */ = {isa = PBXBuildFile; fileRef = 8A69096621C3FAEB006EB211 /* Gojira - Lenfant sauvage (instrumental).mp3 */; };
-		8A69096C21C3FAEB006EB211 /* Gojira - Global Warming (Instrumental).mp3 in Resources */ = {isa = PBXBuildFile; fileRef = 8A69096721C3FAEB006EB211 /* Gojira - Global Warming (Instrumental).mp3 */; };
-		8A69096D21C3FAEB006EB211 /* Gojira - World To Come GUITAR COVER (Instrumental).mp3 in Resources */ = {isa = PBXBuildFile; fileRef = 8A69096821C3FAEB006EB211 /* Gojira - World To Come GUITAR COVER (Instrumental).mp3 */; };
-		8A69096F21C3FAFA006EB211 /* Wolf Down The Earth reversed outro.mp3 in Resources */ = {isa = PBXBuildFile; fileRef = 8A69096E21C3FAF9006EB211 /* Wolf Down The Earth reversed outro.mp3 */; };
+		8A6BC1B8220C7FCE00D26A7D /* MusicPlayer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8A6BC1B7220C7FCE00D26A7D /* MusicPlayer.swift */; };
+		8A6BC1BA220CAABB00D26A7D /* SlippyText.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8A6BC1B9220CAABB00D26A7D /* SlippyText.swift */; };
 		8A6C728121B9597D008A36BB /* Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8A6C728021B9597D008A36BB /* Extensions.swift */; };
 		8A6ED3A821B5BD2D00ABB104 /* SlippyTextNew.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8A6ED3A721B5BD2D00ABB104 /* SlippyTextNew.swift */; };
 		8A8269C02188D0A100620EFE /* HomeViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8A8269BF2188D0A100620EFE /* HomeViewController.swift */; };
@@ -80,12 +76,8 @@
 		8A5A69CD21762C940010EE06 /* Adoration For None.mp3 */ = {isa = PBXFileReference; lastKnownFileType = audio.mp3; path = "Adoration For None.mp3"; sourceTree = "<group>"; };
 		8A5A69CE21762C960010EE06 /* The Way Of All Flesh.mp3 */ = {isa = PBXFileReference; lastKnownFileType = audio.mp3; path = "The Way Of All Flesh.mp3"; sourceTree = "<group>"; };
 		8A5A69DB21762E110010EE06 /* Track.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Track.swift; sourceTree = "<group>"; };
-		8A69096421C3FAEB006EB211 /* Gojira - The Way Of All Flesh (Hidden instrumental song).mp3 */ = {isa = PBXFileReference; lastKnownFileType = audio.mp3; name = "Gojira - The Way Of All Flesh (Hidden instrumental song).mp3"; path = "../../../../../Downloads/Gojira - The Way Of All Flesh (Hidden instrumental song).mp3"; sourceTree = "<group>"; };
-		8A69096521C3FAEB006EB211 /* Gojira - The Gift Of Guilt GUITAR COVER (Instrumental).mp3 */ = {isa = PBXFileReference; lastKnownFileType = audio.mp3; name = "Gojira - The Gift Of Guilt GUITAR COVER (Instrumental).mp3"; path = "../../../../../Downloads/Gojira - The Gift Of Guilt GUITAR COVER (Instrumental).mp3"; sourceTree = "<group>"; };
-		8A69096621C3FAEB006EB211 /* Gojira - Lenfant sauvage (instrumental).mp3 */ = {isa = PBXFileReference; lastKnownFileType = audio.mp3; name = "Gojira - Lenfant sauvage (instrumental).mp3"; path = "../../../../../Downloads/Gojira - Lenfant sauvage (instrumental).mp3"; sourceTree = "<group>"; };
-		8A69096721C3FAEB006EB211 /* Gojira - Global Warming (Instrumental).mp3 */ = {isa = PBXFileReference; lastKnownFileType = audio.mp3; name = "Gojira - Global Warming (Instrumental).mp3"; path = "../../../../../Downloads/Gojira - Global Warming (Instrumental).mp3"; sourceTree = "<group>"; };
-		8A69096821C3FAEB006EB211 /* Gojira - World To Come GUITAR COVER (Instrumental).mp3 */ = {isa = PBXFileReference; lastKnownFileType = audio.mp3; name = "Gojira - World To Come GUITAR COVER (Instrumental).mp3"; path = "../../../../../Downloads/Gojira - World To Come GUITAR COVER (Instrumental).mp3"; sourceTree = "<group>"; };
-		8A69096E21C3FAF9006EB211 /* Wolf Down The Earth reversed outro.mp3 */ = {isa = PBXFileReference; lastKnownFileType = audio.mp3; name = "Wolf Down The Earth reversed outro.mp3"; path = "../../../../../Downloads/Wolf Down The Earth reversed outro.mp3"; sourceTree = "<group>"; };
+		8A6BC1B7220C7FCE00D26A7D /* MusicPlayer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MusicPlayer.swift; sourceTree = "<group>"; };
+		8A6BC1B9220CAABB00D26A7D /* SlippyText.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SlippyText.swift; sourceTree = "<group>"; };
 		8A6C728021B9597D008A36BB /* Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Extensions.swift; sourceTree = "<group>"; };
 		8A6ED3A721B5BD2D00ABB104 /* SlippyTextNew.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SlippyTextNew.swift; sourceTree = "<group>"; };
 		8A8269BF2188D0A100620EFE /* HomeViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeViewController.swift; sourceTree = "<group>"; };
@@ -171,12 +163,6 @@
 				8A5A69CA21762C920010EE06 /* Esoteric Surgery.mp3 */,
 				8A5A69C421762C8C0010EE06 /* Oroborus.mp3 */,
 				8A5A69C621762C8F0010EE06 /* The Art Of Dying.mp3 */,
-				8A69096721C3FAEB006EB211 /* Gojira - Global Warming (Instrumental).mp3 */,
-				8A69096621C3FAEB006EB211 /* Gojira - Lenfant sauvage (instrumental).mp3 */,
-				8A69096521C3FAEB006EB211 /* Gojira - The Gift Of Guilt GUITAR COVER (Instrumental).mp3 */,
-				8A69096421C3FAEB006EB211 /* Gojira - The Way Of All Flesh (Hidden instrumental song).mp3 */,
-				8A69096821C3FAEB006EB211 /* Gojira - World To Come GUITAR COVER (Instrumental).mp3 */,
-				8A69096E21C3FAF9006EB211 /* Wolf Down The Earth reversed outro.mp3 */,
 				8A5A69C721762C900010EE06 /* The Silver Cord.mp3 */,
 				8A5A69CE21762C960010EE06 /* The Way Of All Flesh.mp3 */,
 				8A5A69C821762C910010EE06 /* Toxic Garbage Island.mp3 */,
@@ -228,16 +214,17 @@
 			isa = PBXGroup;
 			children = (
 				8A5A69AA21762B780010EE06 /* Songs */,
-				8AF6A6302170091700DC776C /* AppDelegate.swift */,
 				8AC192692170D9E500C816C6 /* Extensions */,
 				8A4B90822178A6AA009B4EA7 /* Cells */,
 				8AF6A64421700A2600DC776C /* Model */,
 				8AF6A64321700A2400DC776C /* View */,
 				8AF6A64221700A1900DC776C /* Controller */,
+				8AF6A6302170091700DC776C /* AppDelegate.swift */,
 				8AF6A6372170091A00DC776C /* Assets.xcassets */,
 				8AF6A6392170091A00DC776C /* LaunchScreen.storyboard */,
 				8AF6A63C2170091A00DC776C /* Info.plist */,
 				8A6ED3A721B5BD2D00ABB104 /* SlippyTextNew.swift */,
+				8A6BC1B9220CAABB00D26A7D /* SlippyText.swift */,
 				8A6C728021B9597D008A36BB /* Extensions.swift */,
 				8A427B4F21B1D17A00E2F1C2 /* SlippyTexts.swift */,
 			);
@@ -275,6 +262,7 @@
 			children = (
 				8AF6A66221701A0100DC776C /* Colors.swift */,
 				8A5A69DB21762E110010EE06 /* Track.swift */,
+				8A6BC1B7220C7FCE00D26A7D /* MusicPlayer.swift */,
 			);
 			path = Model;
 			sourceTree = "<group>";
@@ -342,25 +330,19 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				8A69096C21C3FAEB006EB211 /* Gojira - Global Warming (Instrumental).mp3 in Resources */,
 				8A5A69CF21762C960010EE06 /* A Sight To Behold.mp3 in Resources */,
 				8A5A69D621762C960010EE06 /* Esoteric Surgery.mp3 in Resources */,
 				8A5A69D421762C960010EE06 /* Toxic Garbage Island.mp3 in Resources */,
 				8A5A69D021762C960010EE06 /* Oroborus.mp3 in Resources */,
-				8A69096B21C3FAEB006EB211 /* Gojira - Lenfant sauvage (instrumental).mp3 in Resources */,
 				8A5A69D521762C960010EE06 /* Vacuity.mp3 in Resources */,
 				8A5A69D921762C960010EE06 /* Adoration For None.mp3 in Resources */,
 				8A5A69DA21762C960010EE06 /* The Way Of All Flesh.mp3 in Resources */,
 				8A5A69D221762C960010EE06 /* The Art Of Dying.mp3 in Resources */,
-				8A69096A21C3FAEB006EB211 /* Gojira - The Gift Of Guilt GUITAR COVER (Instrumental).mp3 in Resources */,
 				8AF6A63B2170091A00DC776C /* LaunchScreen.storyboard in Resources */,
 				8A5A69D121762C960010EE06 /* All The Tears.mp3 in Resources */,
 				8AF6A6382170091A00DC776C /* Assets.xcassets in Resources */,
-				8A69096F21C3FAFA006EB211 /* Wolf Down The Earth reversed outro.mp3 in Resources */,
-				8A69096D21C3FAEB006EB211 /* Gojira - World To Come GUITAR COVER (Instrumental).mp3 in Resources */,
 				8A5A69D321762C960010EE06 /* The Silver Cord.mp3 in Resources */,
 				8A5A69D821762C960010EE06 /* Wolf Down The Earth.mp3 in Resources */,
-				8A69096921C3FAEB006EB211 /* Gojira - The Way Of All Flesh (Hidden instrumental song).mp3 in Resources */,
 				8A5A69D721762C960010EE06 /* Yama's Messengers.mp3 in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -387,7 +369,9 @@
 				8AF4A60721727B140046C75B /* PlayerView.swift in Sources */,
 				8A6C728121B9597D008A36BB /* Extensions.swift in Sources */,
 				8A8269C02188D0A100620EFE /* HomeViewController.swift in Sources */,
+				8A6BC1B8220C7FCE00D26A7D /* MusicPlayer.swift in Sources */,
 				8AF6A64A21700A7100DC776C /* View.swift in Sources */,
+				8A6BC1BA220CAABB00D26A7D /* SlippyText.swift in Sources */,
 				8AC1926B2170D9F000C816C6 /* SetupHomeView.swift in Sources */,
 				8AE8724D21851E2200C4D9E1 /* HomeInnerCollectionView.swift in Sources */,
 				8AD32968217DD0EA008385F5 /* TrackTitleScrollView.swift in Sources */,

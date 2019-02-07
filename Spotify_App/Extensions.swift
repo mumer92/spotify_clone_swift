@@ -46,11 +46,7 @@ extension NSAttributedString {
         return 0
     }
 }
-extension String {
-//    public func getLargestLineWidth() -> CGFloat {
-//        return 0
-//    }
-}
+
 extension UIFont {
     public func textWidth(str: String) -> CGFloat {
         return str.size(withAttributes: [NSAttributedString.Key.font : self]).width

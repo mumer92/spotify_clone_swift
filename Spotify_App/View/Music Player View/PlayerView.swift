@@ -15,6 +15,18 @@ class PlayerView: View {
     var bottomConstraintForAvaibleDevicesButton: NSLayoutConstraint?
     
     //MARK: Variables
+    var musicPlayer : MusicPlayer = MusicPlayer() {
+        didSet {
+            albumCoverCollectionView.musicPlayer = self.musicPlayer
+           //self.isSmall = musicPlayer.isSmall
+            if musicPlayer.isSmall {
+                updateDisplayForSmallView()
+            } else {
+                updateDisplayForFullScreenView()
+            }
+        }
+    }
+    //fix delete this one
     var isSmall: Bool = true {
         didSet {
             if isSmall {
@@ -24,12 +36,17 @@ class PlayerView: View {
             }
         }
     }
-    //todo carry theme under mark:-layout
+    
     private func updateDisplayForSmallView() {
         let image = UIImage(named: "up_arrow")?.withRenderingMode(.alwaysTemplate)
         upDownArrowButton.setImage(image, for: .normal)
-        let playImage = UIImage(named: "play_18")?.withRenderingMode(.alwaysTemplate)
+        
+        var playImage = UIImage(named: "play_18")?.withRenderingMode(.alwaysTemplate)
+        if musicPlayer.isPlaying {
+            playImage = UIImage(named: "pause_18")?.withRenderingMode(.alwaysTemplate)
+        }
         playListButton.setImage(playImage, for: .normal)
+        
         slippyText.alpha = 1
         upDownArrowButton.tintColor = .white
         bottomConstraintForAvaibleDevicesButton?.constant = -1
@@ -60,7 +77,7 @@ class PlayerView: View {
             return UIScreen.main.bounds.height / 45
         }
     }
-    //MARK: - Items
+    //MARK: - Objects
     //MARK: - Background Image Items
     let backgroundImageView = UIImageView(frame: UIScreen.main.bounds)
     var backgroundImage = UIImage(named: "the_way_of_all_flesh") {
@@ -83,7 +100,6 @@ class PlayerView: View {
         
         return button
     }()
-    ///todo
     
     let slippyText = SlippyTextNew()
 
@@ -103,6 +119,7 @@ class PlayerView: View {
     
     //MARK: - Song Information and options
     //Gotta turn this into Scroll view cause text has to scroll when song name is too long/
+    //let songNameSlippyText = SlippyTextNew()
     let songNameSlippyText = SlippyTextNew()
     var songTitleScrollView: TrackTitleScrollView = {
         let view = TrackTitleScrollView(frame: CGRect(origin: .zero, size: CGSize(width: 50, height: 80)))
@@ -335,10 +352,8 @@ class PlayerView: View {
         
         
 //        let songInformationStackView = UIStackView(arrangedSubviews: [addToLibraryButton,songTitleScrollView, optionsButton])
-        
         let songInformationStackView = UIStackView(arrangedSubviews: [addToLibraryButton,songNameSlippyText, optionsButton])
         songInformationStackView.distribution = .equalSpacing
-//        songInformationStackView.spacing = 0.5
         songInformationStackView.axis = .horizontal
         songInformationStackView.translatesAutoresizingMaskIntoConstraints = false
         songInformationStackView.alignment = .center
@@ -351,11 +366,12 @@ class PlayerView: View {
         songInformationStackView.heightAnchor.constraint(equalToConstant: 40).isActive = true
         
         songInformationStackView.subviews[1].widthAnchor.constraint(equalTo: widthAnchor, multiplier: 0.60).isActive = true
+       songInformationStackView.subviews[1].backgroundColor = .orange
         songInformationStackView.subviews[1].heightAnchor.constraint(equalToConstant: 40).isActive = true
         songInformationStackView.subviews[1].centerXAnchor.constraint(equalTo: centerXAnchor).isActive = true
         songInformationStackView.subviews[1].topAnchor.constraint(equalTo: songInformationStackView.subviews[0].topAnchor).isActive = true
         
-        songNameSlippyText.text = "yo yo yo one thing idk why it ."
+        songNameSlippyText.text = "One thing idk why it doesnt even matter how hard u try."
         songNameSlippyText.backgroundColor = .clear
         songNameSlippyText.autoScrollDuration = true
         songNameSlippyText.aspettaDuration = 1
