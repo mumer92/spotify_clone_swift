@@ -8,26 +8,26 @@
 
 import Foundation
 import UIKit
-    ///TODO :
-    // WHAT HAPPENS WHEN USER ADDS MULTIPLE LINES??????
 public class SlippyTextNew: UIScrollView,  UIScrollViewDelegate {
     
     //MARK: - Public Objects
     var textObject : UILabel = {
         let label = UILabel()
-        label.text = "Song Name"
-        label.backgroundColor = .orange
         label.translatesAutoresizingMaskIntoConstraints = false
+        label.font = UIFont.boldSystemFont(ofSize: 16)
         label.numberOfLines = 2
-        label.font = .systemFont(ofSize: 15)
+        label.text = "Art of Dying"
+        label.backgroundColor = .clear
+        label.textColor = .white
+        label.textAlignment = .center
 
         return label
     }()
     
     //MARK: - Public Variables
-    public var aspettaDuration: Double = 3.5 //standart value
-    public var forwardScrollDuration: Double = 3.5 //3.5 seconds is the default value
-    public var backwardScrollDuration: Double = 3.5 // 3.5 seconds is the default value
+    public var aspettaDuration: Double = 2.5 //standart value
+    public var forwardScrollDuration: Double = 2 //3.5 seconds is the default value
+    public var backwardScrollDuration: Double = 2 // 3.5 seconds is the default value
     public var autoScrollDuration: Bool = true {
         didSet {
             forwardScrollDuration = Double(textWidth / 100)
@@ -43,19 +43,16 @@ public class SlippyTextNew: UIScrollView,  UIScrollViewDelegate {
             layoutIfNeeded()
         }
     }
-    public var numberOfLines: Int = 1 { //todo
-        didSet {
-            if numberOfLines > 1 {
-                
-            }
-        }
-    }
+    
+    public var numberOfLines: Int = 1 // not using it yet.
     
     public var text: String = "" {
         didSet {
             textObject.text = text
             setupLayout()
             layoutIfNeeded()
+            startSliding()
+            
         }
     }
     public var textWidth: CGFloat {
@@ -78,11 +75,11 @@ public class SlippyTextNew: UIScrollView,  UIScrollViewDelegate {
             return forwardScrollDuration + backwardScrollDuration + aspettaDuration
         }
     }
-    private var frameWidth: CGFloat = 0 { ///todo i am not using it yet.
+    private var frameWidth: CGFloat = 0 {
         didSet {
             if oldValue != frameWidth {
                 layoutSubviews()
-                autoScroll()
+//                autoScroll()
             }
         }
     }
@@ -109,10 +106,6 @@ public class SlippyTextNew: UIScrollView,  UIScrollViewDelegate {
         
         if bounds.width > 0 {
             frameWidth = frame.width
-            print("Frame Width : " , frameWidth) //118
-            print("Text Width2 Extension : " , attributedText.size().width) // 151
-            print("Text Object Width :  : " , textObject.frame.width) //163
-            //            print("Text Width2 : " , attributedText.getLargestLineWidth()) // 0
         }
     }
     public func startSliding() {

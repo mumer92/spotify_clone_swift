@@ -8,20 +8,46 @@
 
 import UIKit
 
+extension UIApplication {
+//    var statusBarView: UIView? {
+//        if responds(to: Selector("statusBar")) {
+//            return value(forKey: "statusBar") as? UIView
+//        }
+//        return nil
+//    }
+    var statusBarView: UIView? {
+        return value(forKey: "statusBar") as? UIView
+        }
+    }
+
 @UIApplicationMain
 class AppDelegate: UIResponder, UIApplicationDelegate {
 
     var window: UIWindow?
+    var navigationController = UINavigationController(rootViewController: ViewController())
 
-
+    //MARK: - Rotation
+    //Prevents view to change when phone rotated
+    var restrictRotation:UIInterfaceOrientationMask = .portrait
+    func application(_ application: UIApplication, supportedInterfaceOrientationsFor window: UIWindow?) -> UIInterfaceOrientationMask {
+        return self.restrictRotation
+    }
+    
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
         // Override point for customization after application launch.
         
         window = UIWindow(frame: UIScreen.main.bounds)
         window?.makeKeyAndVisible()
         
-        let mainTabBarVC = MainTabBarController()
-        window?.rootViewController = mainTabBarVC
+        UIApplication.shared.statusBarView?.backgroundColor = .red
+//        UINavigationBar.appearance().setBackgroundImage(UIImage(), for: .default)
+//        UINavigationBar.appearance().shadowImage = UIImage()
+//        UINavigationBar.appearance().backgroundColor = .clear
+//        UINavigationBar.appearance().isTranslucent = true
+        
+        navigationController = UINavigationController(rootViewController: MainTabBarController())
+        window?.rootViewController = navigationController
+//        window?.rootViewController = MainTabBarController()
         
         return true
     }

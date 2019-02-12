@@ -18,7 +18,7 @@ class TrackTitleScrollView: UIScrollView, UIScrollViewDelegate {
     var songNameLabel : UILabel = {
         let label = UILabel(frame: CGRect(origin: .zero, size: CGSize(width: 0, height: 0)))
         
-        label.text = "somewhere i belooong and i've got nothing to say i cant believe blablabla..."
+        label.text = "somewhere i belooong and i've got nothing to say .."
         label.font = UIFont.systemFont(ofSize: 16)
         label.numberOfLines = 2
         label.backgroundColor = .clear

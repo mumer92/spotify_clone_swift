@@ -11,6 +11,9 @@ import UIKit
 import MediaPlayer
 import AVFoundation
 
+protocol PlaylistTransporter {
+    func sendPlaylist(songs: [Track])
+}
 protocol ControlTabBarControllerDelegate: class {
     func musicPlayerFullScreenAnimation()
     func musicPlayerSmallScreenAnimation()
@@ -39,11 +42,9 @@ class MusicPlayerViewController: ViewController<PlayerView>, ControlCollectionVi
         }
     }
     
-    ///TODO Degisecekler listesi
     var songs : [Track] = [] {
         didSet {
             customView.albumCoverCollectionView.songs = self.songs
-            print("songs count : " , songs.count)
         }
     }
     var songsBackup : [Track] = []
@@ -108,11 +109,8 @@ class MusicPlayerViewController: ViewController<PlayerView>, ControlCollectionVi
         didSet {
             if isShuffled {
                 songs = songs.shuffled()
-//                customView.albumCoverCollectionView.reloadData()
-                
             } else {
                 songs = songsBackup
-//                customView.albumCoverCollectionView.reloadData()
             }
             currentTrack = songs.first
             updateMusicPlayer(track: currentTrack!)
@@ -153,14 +151,10 @@ class MusicPlayerViewController: ViewController<PlayerView>, ControlCollectionVi
         didSet {
             if isSmall {
                 customView.isSmall = self.isSmall
-//                controlTabBarControllerDelegate?.musicPlayerSmallScreenAnimation()
-                
                 customView.playListButton.removeTarget(self, action: #selector(showQueue(_:)), for: .touchUpInside)
                 customView.playListButton.addTarget(self, action: #selector(playPauseSong), for: .touchUpInside)
             } else {
                 customView.isSmall = self.isSmall
-//                controlTabBarControllerDelegate?.musicPlayerFullScreenAnimation()
-                
                 customView.playListButton.removeTarget(self, action: #selector(playPauseSong), for: .touchUpInside)
                 customView.playListButton.addTarget(self, action: #selector(showQueue(_:)), for: .touchUpInside)
             }
@@ -230,7 +224,6 @@ class MusicPlayerViewController: ViewController<PlayerView>, ControlCollectionVi
         songInfoAttributedStringForSmallView.append(NSAttributedString(string: (currentTrack?.artist)!, attributes: [NSAttributedString.Key.strokeColor : UIColor.lightGray, NSAttributedString.Key.font : UIFont.systemFont(ofSize: 13), NSAttributedString.Key.paragraphStyle: paragraphStyle]))
         
         customView.songNameSlippyText.attributedText = songInfoAttributedString
-        customView.slippyText.attributedText = songInfoAttributedStringForSmallView
         
         //Setting second
         let totalSecond : Int = (currentTrack?.duration)!

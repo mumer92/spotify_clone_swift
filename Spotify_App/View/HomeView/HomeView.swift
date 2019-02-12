@@ -19,7 +19,6 @@ class HomeView: View {
         
         let cv = HomeCollectionView(frame: CGRect(origin: .zero, size: .zero), collectionViewLayout: layout)
         cv.translatesAutoresizingMaskIntoConstraints = false
-//        cv.backgroundColor = .
         return cv
     }()
     //MARK: - Init

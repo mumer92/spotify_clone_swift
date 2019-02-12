@@ -60,6 +60,10 @@ class MainTabBarController: UITabBarController, ControlTabBarControllerDelegate 
     var locationYChange: CGFloat = 0
    
     //MARK: - View Appareance
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        navigationController?.setNavigationBarHidden(true, animated: animated)
+    }
     override func viewDidLoad() {
         super.viewDidLoad()
 

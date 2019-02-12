@@ -9,7 +9,7 @@
 import UIKit
 import MediaPlayer
 
-extension MusicPlayerViewController {
+extension UIViewController {
     func getSongs() -> [Track] {
         var tracks : [Track] = []
         let folderURL = URL(fileURLWithPath: Bundle.main.resourcePath!)

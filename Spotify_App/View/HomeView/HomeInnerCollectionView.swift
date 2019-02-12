@@ -29,6 +29,13 @@ class HomeInnerCollectionView: UICollectionView {
         fatalError("init(coder:) has not been implemented")
     }
     
+    func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
+        let appDelegate = UIApplication.shared.delegate as! AppDelegate
+        let playlistViewController = PlaylistViewController()
+        appDelegate.navigationController.pushViewController(playlistViewController, animated: true)
+        print("clicked")
+    }
+    
 }
 
 

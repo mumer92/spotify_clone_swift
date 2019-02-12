@@ -23,9 +23,9 @@ class HomeViewController: ViewController<HomeView> {
     }
     override func viewDidLoad() {
         super.viewDidLoad()
-//        self.navigationController?.navigationBar.isTranslucent = false
+        
         self.navigationController?.navigationBar.isHidden = true
-        //Setting status bar's backgroundcolor
+        
         guard let statusBarView = UIApplication.shared.value(forKeyPath: "statusBarWindow.statusBar") as? UIView else {
             return
         }

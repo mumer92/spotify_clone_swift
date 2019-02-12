@@ -118,8 +118,6 @@ class PlayerView: View {
     }()
     
     //MARK: - Song Information and options
-    //Gotta turn this into Scroll view cause text has to scroll when song name is too long/
-    //let songNameSlippyText = SlippyTextNew()
     let songNameSlippyText = SlippyTextNew()
     var songTitleScrollView: TrackTitleScrollView = {
         let view = TrackTitleScrollView(frame: CGRect(origin: .zero, size: CGSize(width: 50, height: 80)))
@@ -191,7 +189,6 @@ class PlayerView: View {
         
         return timeUpdaterDisplay
     }()
-    
     
     var totalTimeInfoLabel : UILabel = {
         let label = UILabel()
@@ -274,9 +271,6 @@ class PlayerView: View {
     required init?(coder aDecoder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
-    override func tintColorDidChange() {
-        print("color changed amina kodumun yerinde")
-    }
     
     //MARK: - Layout
     override func setViews() {
@@ -351,7 +345,6 @@ class PlayerView: View {
         //
         
         
-//        let songInformationStackView = UIStackView(arrangedSubviews: [addToLibraryButton,songTitleScrollView, optionsButton])
         let songInformationStackView = UIStackView(arrangedSubviews: [addToLibraryButton,songNameSlippyText, optionsButton])
         songInformationStackView.distribution = .equalSpacing
         songInformationStackView.axis = .horizontal
@@ -365,13 +358,13 @@ class PlayerView: View {
         songInformationStackView.widthAnchor.constraint(equalTo: widthAnchor, multiplier: 0.90).isActive = true
         songInformationStackView.heightAnchor.constraint(equalToConstant: 40).isActive = true
         
-        songInformationStackView.subviews[1].widthAnchor.constraint(equalTo: widthAnchor, multiplier: 0.60).isActive = true
+        songInformationStackView.subviews[1].widthAnchor.constraint(equalTo: widthAnchor, multiplier: 0.4).isActive = true
        songInformationStackView.subviews[1].backgroundColor = .orange
         songInformationStackView.subviews[1].heightAnchor.constraint(equalToConstant: 40).isActive = true
         songInformationStackView.subviews[1].centerXAnchor.constraint(equalTo: centerXAnchor).isActive = true
         songInformationStackView.subviews[1].topAnchor.constraint(equalTo: songInformationStackView.subviews[0].topAnchor).isActive = true
         
-        songNameSlippyText.text = "One thing idk why it doesnt even matter how hard u try."
+        songNameSlippyText.text = "One thing iw hard u try."
         songNameSlippyText.backgroundColor = .clear
         songNameSlippyText.autoScrollDuration = true
         songNameSlippyText.aspettaDuration = 1
